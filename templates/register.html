@@ -1,19 +1,20 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div>
-    <form insert="user_database.db" method="post">
-        <label>Name</label>
-        <input type="text" name="one" id="name"><br><br>
-        <label>Username/Email</label>
-        <input type="email" name="two" id="username"><br><br>
 
-        <label>Password</label>
-        <input type="password" name="three" id="password">
+<form action="/">
+    <label>Name</label>
+    <input type="text" name="Name" id="name"><br><br>
 
-        <input type="submit" value="CREATE USER">
-    </form>
-</div>
+    <label>Username/Email</label>
+    <input type="email" name="Username" id="username"><br><br>
+
+    <label>Password</label>
+    <input type="password" name="Password" id="password">
+
+    <input type="submit" value="CREATE USER">
+</form>
+
 
 
 {% endblock %}
