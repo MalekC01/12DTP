@@ -31,12 +31,10 @@ def my_form():
     name = request.form.get("Name")
     email = request.form.get("Email")
     password = request.form.get("Password")
-    print(email)
   connection = create_connection('user_database.db')
   try:
     sql_query = '''INSERT INTO User (name, email, password) VALUES (?,?,?)'''
     cur = connection.cursor()
-    print((name, email, password))
     cur.execute(sql_query, (name, email, password))
     connection.commit()
   except:
@@ -50,13 +48,20 @@ def my_form():
 def login():
   return render_template("login.html")
 
-@app.route("/login")
+@app.route("/login", methods=['POST'])
 def login_check():
   if request.method == "POST":
     username = request.form.get("username")
-    login_query = '''SELECT name FROM User WHERE name = '?';'''
-    cur.execute(login_query, (username))
-    cur.execute()
+    password = request.form.get("password")
+    connection = create_connection('user_database.db')
+    login_valid = False
+    while not login_valid:
+      login_query = '''SELECT name, password FROM User WHERE name = (?) AND password = (?);'''
+      cur = connection.cursor()
+      cur.execute(login_query, (username, password))
+      #if len(data) != 0:
+        #login_valid = True 
+    return redirect('/')
 
 if __name__ == '__main__':
   app.run(port=8080, debug=True)
