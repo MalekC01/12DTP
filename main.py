@@ -9,9 +9,9 @@ app = Flask(__name__)
 def home():
   return render_template('home.html')
 
-@app.route('/profile')
-def profile():
-  return render_template('profile.html')
+@app.route('/data')
+def data():
+  return render_template('data.html')
 
 @app.route("/register")
 def register():
@@ -33,7 +33,7 @@ def my_form():
     password = request.form.get("Password")
   connection = create_connection('user_database.db')
   try:
-    sql_query = '''INSERT INTO User (name, email, password) VALUES (?,?,?)'''
+    sql_query = '''INSERT INTO User (name, username_email, password) VALUES (?,?,?)'''
     cur = connection.cursor()
     cur.execute(sql_query, (name, email, password))
     connection.commit()
@@ -46,22 +46,25 @@ def my_form():
 
 @app.route("/login")
 def login():
-  return render_template("login.html")
-
+ return render_template("login.html")
+ 
 @app.route("/login", methods=['POST'])
 def login_check():
-  if request.method == "POST":
-    username = request.form.get("username")
-    password = request.form.get("password")
-    connection = create_connection('user_database.db')
-    login_valid = False
-    while not login_valid:
-      login_query = '''SELECT name, password FROM User WHERE name = (?) AND password = (?);'''
-      cur = connection.cursor()
-      cur.execute(login_query, (username, password))
-      #if len(data) != 0:
-        #login_valid = True 
-    return redirect('/')
+ if request.method == "POST":
+ 
+   username = request.form.get("username")
+   password = request.form.get("password")
+ 
+   connection = create_connection('user_database.db')
+   cur = connection.cursor()
+  
+   login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
+   cur.execute(login_query, (username, password))
+   print((username, password))
+   if not cur.fetchone():
+     return redirect("/login")
+   else:
+     return redirect("/")
 
 if __name__ == '__main__':
   app.run(port=8080, debug=True)

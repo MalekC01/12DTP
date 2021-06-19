@@ -1,4 +1,42 @@
 body {
     font-family: "Helvetica";
-    margin: 20px;
+    margin: 0px;
   }
+
+/* All CSS for navigation bar*/
+
+.topnav {
+  background-color: #1a1aff;
+  overflow: hidden;
+}
+
+.topnav a {
+float: left;
+color: #f2f2f2;
+text-align: center;
+padding: 14px 16px;
+text-decoration: none;
+font-size: 17px;
+}
+
+.topnav a:hover {
+background-color: #0000cc;
+}
+
+.topnav-right {
+float: right;
+}
+
+/* Fonts and sizing */
+h1 {
+  margin: 20px;
+}
+
+p {
+  margin: 20px;
+}
+
+h2 {
+  margin: 20px;
+}
+
