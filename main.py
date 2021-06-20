@@ -9,9 +9,9 @@ app = Flask(__name__)
 def home():
   return render_template('home.html')
 
-@app.route('/data')
-def data():
-  return render_template('data.html')
+@app.route('/stocks')
+def stocks():
+  return render_template('stocks.html')
 
 @app.route("/register")
 def register():

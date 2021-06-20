@@ -1,11 +1,12 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="Register Form">
 <center>
+<div class="Register-Form">
+
 <form method="POST"
     <label>Name</label><br>
-    <input name="Name"><br><br>
+    <input type="name" name="Name"><br><br>
 
     <label>Username (Email)</label><br>
     <input type="email" name="Email"><br><br>
@@ -15,7 +16,7 @@
 
     <input type="submit" value="CREATE USER">
 </form>
-</center>
-</div>
 
+</div>
+</center>
 {% endblock %}

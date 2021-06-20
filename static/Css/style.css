@@ -3,10 +3,18 @@ body {
     margin: 0px;
   }
 
+.Register-Form {
+  background-color: #f2f2f2;
+  width: 25%;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 10px;
+}
+
 /* All CSS for navigation bar*/
 
 .topnav {
-  background-color: #1a1aff;
+  background-color: #0066ff;
   overflow: hidden;
 }
 
@@ -14,18 +22,45 @@ body {
 float: left;
 color: #f2f2f2;
 text-align: center;
-padding: 14px 16px;
+padding: 15px 20px;
 text-decoration: none;
 font-size: 17px;
 }
 
 .topnav a:hover {
-background-color: #0000cc;
+background-color: #0047b3;
 }
 
 .topnav-right {
 float: right;
 }
+
+/* Input formatting */
+
+input {
+  border: 1px solid grey;
+  background-color: white;
+  border-radius: 5px;
+}
+
+input:focus{
+  background-color: white;
+  border: 1px solid black;
+}
+
+input[type="submit"] {
+  background-color: #0066ff;
+  border: none;
+  color: white;
+  width: 150px;
+  margin: 5px;
+  padding: 5px;
+}
+
+input[type="submit"]:hover {
+  background-color: #0047b3;
+}
+
 
 /* Fonts and sizing */
 h1 {
