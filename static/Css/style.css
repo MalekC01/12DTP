@@ -5,27 +5,55 @@ body {
 
 .Register-Form {
   background-color: #f2f2f2;
-  width: 20%;
   border: 2px solid grey;
   border-radius: 5px;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  padding: 50px;
+  text-align: left;
 }
 
 .login {
   background-color: #f2f2f2;
-  width: 20%;
   border: 2px solid grey;
   border-radius: 5px;
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  padding: 20px;
+  padding: 50px;
+  text-align: left;
 }
 
+
+/* Input formatting */
+
+input {
+  border: 1px solid grey;
+  background-color: white;
+  border-radius: 5px;
+  width: auto;
+}
+
+input:focus{
+  background-color: white;
+  border: 1px solid black;
+}
+
+input[type="submit"] {
+  background-color: #0066ff;
+  border: none;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+}
+
+input[type="submit"]:hover {
+  background-color: #0047b3;
+}
 /* All CSS for navigation bar*/
 
 .topnav {
@@ -50,32 +78,6 @@ body {
   float: right;
 }
 
-/* Input formatting */
-
-input {
-  border: 1px solid grey;
-  background-color: white;
-  border-radius: 5px;
-}
-
-input:focus{
-  background-color: white;
-  border: 1px solid black;
-}
-
-input[type="submit"] {
-  background-color: #0066ff;
-  border: none;
-  color: white;
-  width: 150px;
-  margin: 5px;
-  padding: 5px;
-}
-
-input[type="submit"]:hover {
-  background-color: #0047b3;
-}
-
 
 /* Fonts and sizing */
 h1 {
@@ -89,4 +91,3 @@ p {
 h2 {
   margin: 20px;
 }
-
