@@ -1,14 +1,29 @@
 body {
-    font-family: "Helvetica";
-    margin: 0px;
-  }
+  font-family: "Helvetica";
+  margin: 0px;
+}
 
 .Register-Form {
   background-color: #f2f2f2;
-  width: 25%;
+  width: 20%;
   border: 2px solid grey;
   border-radius: 5px;
-  padding: 10px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login {
+  background-color: #f2f2f2;
+  width: 20%;
+  border: 2px solid grey;
+  border-radius: 5px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
 }
 
 /* All CSS for navigation bar*/
@@ -19,20 +34,20 @@ body {
 }
 
 .topnav a {
-float: left;
-color: #f2f2f2;
-text-align: center;
-padding: 15px 20px;
-text-decoration: none;
-font-size: 17px;
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 15px 20px;
+  text-decoration: none;
+  font-size: 17px;
 }
 
 .topnav a:hover {
-background-color: #0047b3;
+  background-color: #0047b3;
 }
 
 .topnav-right {
-float: right;
+  float: right;
 }
 
 /* Input formatting */
