@@ -21,10 +21,8 @@ def stock_data(stock.stock_is_valid):
   if request.method == "POST":
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
+    stock.stock_is_valid()
   
-
-
-    
 
 @app.route("/register")
 def register():

@@ -99,4 +99,4 @@ def get_data():
     print("Open: $" + str(date_open[0]))
     print("Close: $" + str(date_close[0]))
 
-  data = {"date": data_date, }
+  data = {"date": data_date, "high": date_high, "low": date_low, "open": date_open, "close": date_close}
