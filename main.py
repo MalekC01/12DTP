@@ -3,6 +3,9 @@ from flask import Flask, render_template, url_for, request, redirect
 from datetime import datetime
 import sqlite3 
 from sqlite3 import Error
+import stock
+print(stock.token)
+print(stock.test("yes"))
 app = Flask(__name__)
 
 @app.route('/')
@@ -13,11 +16,14 @@ def home():
 def stocks():
   return render_template('stocks.html')
 
-"""@app.route('/stocks', methods=['POST'])
-def search_stock():
-   if request.method == "POST":
-    name = request.form.get("Stock_name")
-    email = request.form.get("data_date")"""
+@app.route('/stocks')
+def stock_data(stock.stock_is_valid):
+  if request.method == "POST":
+    stock_name = request.form.get("Stock_name")
+    date = request.form.get("data_date")
+  
+
+
     
 
 @app.route("/register")

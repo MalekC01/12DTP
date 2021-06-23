@@ -3,12 +3,16 @@ import datetime
 
 token =  "sk_bf573df0da8b4565b36735dda78f1755"
 
+loop = True
 
-def stock_is_valid():
+while loop:
+  print("Data is avalible from the last 5 years.\n")
+
   investment_type = True
+
   stock_exists = False
   stock = ''
-
+    def 
   while not stock_exists:
     stock = input("Use the 4 letter ticker: ")
     try:
@@ -18,11 +22,6 @@ def stock_is_valid():
     except:
       print("\nThis stock doesnt exist try agian.\n")
 
-def test(id):
-  print(id + "hi")
-
-
-def data_for_date():
   info_of_date = ""
   year = ""
   month = ""
@@ -70,8 +69,6 @@ def data_for_date():
     else:
       day_is_a_weekday = True
 
-def get_data():
-
   api_url =  f"https://cloud.iexapis.com/stable/stock/{stock}/chart/date/{info_of_date}?&token={token}&chartByDay=true"
 
   data = requests.get(api_url).json()
@@ -88,7 +85,7 @@ def get_data():
     date_low.append(data[i]['low'])
     date_open.append(data[i]['open'])
     date_close.append(data[i]['close'])
-
+    
   if len(date_high) == 0:
     print("\nThe market was closed on " + str(year) + " " + str(month) + " " + str(day))
   else:
@@ -99,4 +96,15 @@ def get_data():
     print("Open: $" + str(date_open[0]))
     print("Close: $" + str(date_close[0]))
 
-  data = {"date": data_date, }
+  more_data = True
+
+  while more_data:
+    more_data = input("\nWould you like to see more data? Yes or No. ")
+
+    if more_data == "no" or more_data == "No":
+      more_data = False
+      loop = False
+    elif more_data == "yes" or more_data == "Yes":
+      more_data = False
+    else:
+      print("Type Yes or No.")
