@@ -78,16 +78,13 @@ input[type="submit"]:hover {
   float: right;
 }
 
+.Stock_Info {
+  margin: 100px;
+}
+
 
 /* Fonts and sizing */
-h1 {
-  margin: 20px;
-}
 
-p {
-  margin: 20px;
-}
-
-h2 {
+.Header{
   margin: 20px;
 }

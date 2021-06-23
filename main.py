@@ -13,6 +13,13 @@ def home():
 def stocks():
   return render_template('stocks.html')
 
+"""@app.route('/stocks', methods=['POST'])
+def search_stock():
+   if request.method == "POST":
+    name = request.form.get("Stock_name")
+    email = request.form.get("data_date")"""
+    
+
 @app.route("/register")
 def register():
   return render_template("register.html")
