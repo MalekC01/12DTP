@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-<div class="Stock_Info"
+<div class="Stock_Info">
 
 <b><h2>See Histoical Data About A Stock.</h2></b>
 
@@ -15,8 +15,17 @@
     <label>What day would you like to see the data about?</label><br>
     <input type="datetime" name="data_date" placeholder="DD/MM/YYYY">
 
+    <input type="submit" value="search stock">
+
 
 </form>
+{{result}}
+{% if result == True%}
+    <p>Stock exists!</p>
+{% else %}
+    <p>Stock doesn't exist</p>
+{%endif%}
 
+</div>
 
 {% endblock %}

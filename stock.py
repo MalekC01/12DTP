@@ -4,19 +4,17 @@ import datetime
 token =  "sk_bf573df0da8b4565b36735dda78f1755"
 
 
-def stock_is_valid():
-  investment_type = True
-  stock_exists = False
-  stock = ''
+def stock_is_valid(stock):
+  try:
+    test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock}/company?&token={token}"
+    requests.get(test_stock).json()
+    return True
+  except:
+    print("\nThis stock doesnt exist try agian.\n")
+    return False
 
-  while not stock_exists:
-    stock = input("Use the 4 letter ticker: ")
-    try:
-      test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock}/company?&token={token}"
-      requests.get(test_stock).json()
-      stock_exists = True
-    except:
-      print("\nThis stock doesnt exist try agian.\n")
+
+    
 
 def test(id):
   print(id + "hi")

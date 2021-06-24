@@ -12,17 +12,22 @@ app = Flask(__name__)
 def home():
   return render_template('home.html')
 
-@app.route('/stocks')
-def stocks():
-  return render_template('stocks.html')
 
-@app.route('/stocks')
-def stock_data(stock.stock_is_valid):
+@app.route('/stocks', methods = ["GET", "POST"]) 
+def stock_data():
   if request.method == "POST":
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
-    stock.stock_is_valid()
-  
+
+    print(stock_name, date)
+
+    result = stock.stock_is_valid(stock_name)
+    print(result)
+
+    find_date = stock.data_for_date(date)
+    
+
+  return render_template("stocks.html", result = result)
 
 @app.route("/register")
 def register():
