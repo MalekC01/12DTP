@@ -6,6 +6,12 @@
 <form method="POST">
     <b>
         
+    {% if successful == False%}
+        <div class="login_unsuccessful">
+            <p>Date is not valid.</p>    
+        </div>
+    {%endif%}
+
     <label>Username</label><br>
     <input name="username" type="email"><br><br>
 

@@ -14,63 +14,54 @@ def stock_is_valid(stock):
     return False
 
 
-    
-
 def test(id):
   print(id + "hi")
 
 
-def data_for_date():
+def is_date_valid(date):
+
   info_of_date = ""
-  year = ""
-  month = ""
-  day = ""
 
-  day_is_a_weekday = False
+  if len(date) != 10:
+    return False, 'Length of date is wrong (DD/MM/YYYY)'
 
-  while not day_is_a_weekday:
-
-    print("\nWhat date you would like to see data about?\nMust be in the last 5 years.\n")
-    year_correct = False
-    while not year_correct:
-      year = int(input("Year: "))
-      if year not in range(2016, 2022):
-        print("Year must be within 2016-2021.")
-      else:
-          year_correct = True
-
-    month_correct = False
-    while not month_correct:
-      month = int(input("Month: "))
-      if month not in range(1, 13):
-        print("Month must be between 1-12, for single digit months put a 0 infront.")
-      else:
-        month_correct = True
-      if month in range(1, 10):
-        month = "0" + str(month)
-
-    day_correct = False
-    while not day_correct:
-      day = int(input("Day: "))
-      if day not in range(1, 32):
-        print("Day must be between 1-31, for single digit days put a 0 infront.")
-      else:
-        day_correct = True
-      if day in range(1, 10):
-        day = "0" + str(day)
-
-    info_of_date = str(year) + str(month) + str(day)
-    is_day_a_weekday = datetime.datetime(int(year), int(month), int(day))
-    day_name = is_day_a_weekday.strftime("%A")
-
-    if day_name == "Saturday" or day_name == "Sunday":
-      print("\nThe stock market is only open Monday-Friday. Try again.")
+  for i in range(len(date)):
+    if i == 2 or i == 5:
+      if date[i] != "/":
+        return False, 'Make sure to add a / after the days and month. (DD/MM/YYYY'
     else:
-      day_is_a_weekday = True
+      if not date[i].isdigit():
+        return False, 'Date must be entered in intergers'
 
-def get_data():
+  date_list = date.split('/')
 
-  api_url =  f"https://cloud.iexapis.com/stable/stock/{stock}/chart/date/{info_of_date}?&token={token}&chartByDay=true"
+  year = date_list[2]
+  month = date_list[1]
+  day = date_list[0]
+
+
+  if int(year) not in range(2016, 2022):
+    return False, 'Year must be in the last 5 years (2016-2021).'
+
+  if int(month) not in range(1, 13):
+    return False, 'Month must be between 1-12'
+
+  if int(day) not in range(1, 32):
+    return False, 'Day must be between 1-31'
+    
+  is_day_a_weekday = datetime.datetime(int(year), int(month), int(day))
+  day_name = is_day_a_weekday.strftime("%A")
+
+  if day_name == "Saturday" or day_name == "Sunday":
+    return False, 'Market is not open in the weekend.'
+
+  info_of_date = year + month + day
+
+  return True, info_of_date
+
+def get_data(stock_name, date_string):
+
+  api_url =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/date/{date_string}?&token={token}&chartByDay=true"
 
   data = requests.get(api_url).json()
 
@@ -87,14 +78,6 @@ def get_data():
     date_open.append(data[i]['open'])
     date_close.append(data[i]['close'])
 
-  if len(date_high) == 0:
-    print("\nThe market was closed on " + str(year) + " " + str(month) + " " + str(day))
-  else:
-    print("\nAll prices are in $USD\n")
-    print("Date: " + str(data_date[0]))
-    print("High: $" + str(date_high[0]))
-    print("Low: $" + str(date_low[0]))
-    print("Open: $" + str(date_open[0]))
-    print("Close: $" + str(date_close[0]))
-
-  data = {"date": data_date, "high": date_high, "low": date_low, "open": date_open, "close": date_close}
+  raw_data = {"date": data_date, "high": date_high, "low": date_low, "open": date_open, "close": date_close}
+  
+  return raw_data

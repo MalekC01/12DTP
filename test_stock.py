@@ -12,7 +12,7 @@ while loop:
 
   stock_exists = False
   stock = ''
-    def 
+  
   while not stock_exists:
     stock = input("Use the 4 letter ticker: ")
     try:
@@ -95,7 +95,10 @@ while loop:
     print("Low: $" + str(date_low[0]))
     print("Open: $" + str(date_open[0]))
     print("Close: $" + str(date_close[0]))
+  data = {"date": data_date, "high": date_high, "low": date_low, "open": date_open, "close": date_close}
+  print(data)
 
+    
   more_data = True
 
   while more_data:

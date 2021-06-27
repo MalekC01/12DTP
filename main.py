@@ -15,6 +15,8 @@ def home():
 
 @app.route('/stocks', methods = ["GET", "POST"]) 
 def stock_data():
+  result = None
+  date_valid = None
   if request.method == "POST":
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
@@ -24,10 +26,14 @@ def stock_data():
     result = stock.stock_is_valid(stock_name)
     print(result)
 
-    find_date = stock.data_for_date(date)
-    
+    date_valid, date_string = stock.is_date_valid(date)
+    print(date_valid)
+    print(date_string)
+  
+    find_data = stock.get_data(stock_name, date_string)
+    print(find_data)
 
-  return render_template("stocks.html", result = result)
+  return render_template("stocks.html", result = result, date_valid = date_valid)
 
 @app.route("/register")
 def register():
@@ -53,8 +59,10 @@ def my_form():
     cur = connection.cursor()
     cur.execute(sql_query, (name, email, password))
     connection.commit()
+
   except:
     print("Something went wrong saving your data. Please try agian.")
+
   finally:
     if connection:
       connection.close()
@@ -66,21 +74,24 @@ def login():
  
 @app.route("/login", methods=['POST'])
 def login_check():
- if request.method == "POST":
- 
-   username = request.form.get("username")
-   password = request.form.get("password")
- 
-   connection = create_connection('user_database.db')
-   cur = connection.cursor()
+  if request.method == "POST":
+    username = request.form.get("username")
+    password = request.form.get("password")
   
-   login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
-   cur.execute(login_query, (username, password))
-   print((username, password))
-   if not cur.fetchone():
-     return redirect("/login")
-   else:
-     return redirect("/")
+    connection = create_connection('user_database.db')
+    cur = connection.cursor()
+    
+    login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
+    cur.execute(login_query, (username, password))
+    print((username, password))
+    successful = None
+    if not cur.fetchone():
+      successful = False
+      return redirect("/login", successful = successful)
+    else:
+      successful = True
+      return redirect("/")
+      
 
 if __name__ == '__main__':
   app.run(port=8080, debug=True)

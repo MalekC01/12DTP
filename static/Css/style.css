@@ -27,6 +27,50 @@ body {
   text-align: left;
 }
 
+/* Css for stock page */
+
+.User_input {
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  position: fixed;
+  padding: 25px;
+  text-align: left;
+  margin: 50px;
+}
+
+.display_data {
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 25px;
+  text-align: right;
+  margin: 50px;
+}
+
+/* Error messages */
+
+.date_not_valid {
+  background-color: #ef4943;
+  border: 2px solid red;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.stock_not_valid {
+  background-color: #ef4943;
+  border: 2px solid red;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.login_unsuccessful {
+  background-color: #ef4943;
+  border: 2px solid red;
+  border-radius: 5px;
+  padding: 5px;
+}
+
 
 /* Input formatting */
 
