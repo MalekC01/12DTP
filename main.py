@@ -17,6 +17,7 @@ def home():
 def stock_data():
   result = None
   date_valid = None
+  find_data = None
   if request.method == "POST":
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
@@ -33,7 +34,7 @@ def stock_data():
     find_data = stock.get_data(stock_name, date_string)
     print(find_data)
 
-  return render_template("stocks.html", result = result, date_valid = date_valid)
+  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data)
 
 @app.route("/register")
 def register():
@@ -87,10 +88,10 @@ def login_check():
     successful = None
     if not cur.fetchone():
       successful = False
-      return redirect("/login", successful = successful)
+      return render_template("/login.html", successful = successful)
     else:
       successful = True
-      return redirect("/")
+      return render_template("/")
       
 
 if __name__ == '__main__':

@@ -43,16 +43,38 @@
         <br>
 
     </form>
-</div>
 
-<div class="display_data">
+
+
 
     {% if date_valid == True%}
-    {{find_data}}  
+    <div class="display_data">
+        
+        <p>Open: $</p>
+        {{find_data.get("open")}}
+
+        <br>
+        
+        <p>High: $</p>
+        {{find_data.get("high")}}
+        
+        <br>
+
+        <p>Low: $</p>
+        {{find_data.get("low")}}
+
+        <br>
+
+        <p>Close: $</p>
+        {{find_data.get("close")}}
+
+
+    </div>
     {%endif%}
 
-</div>
 
+
+</div>
 
 
 {% endblock %}
