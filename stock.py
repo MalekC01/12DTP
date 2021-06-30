@@ -4,6 +4,7 @@ import datetime
 token =  "sk_bf573df0da8b4565b36735dda78f1755"
 
 
+#Tests stock to make sure it is a valid stock in the api
 def stock_is_valid(stock):
   try:
     test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock}/company?&token={token}"
@@ -18,6 +19,7 @@ def test(id):
   print(id + "hi")
 
 
+#Makes sure that that the market was open on that day
 def is_date_valid(date):
 
   info_of_date = ""
@@ -59,6 +61,8 @@ def is_date_valid(date):
 
   return True, info_of_date
 
+
+#takes the input from the stock name a date and gets the data from the api
 def get_data(stock_name, date_string):
 
   api_url =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/date/{date_string}?&token={token}&chartByDay=true"

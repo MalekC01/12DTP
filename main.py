@@ -8,11 +8,12 @@ print(stock.token)
 print(stock.test("yes"))
 app = Flask(__name__)
 
+#Home page
 @app.route('/')
 def home():
   return render_template('home.html')
 
-
+#Stock page and api
 @app.route('/stocks', methods = ["GET", "POST"]) 
 def stock_data():
   result = None
@@ -38,10 +39,14 @@ def stock_data():
 
   return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name)
 
+
+#Register Page
 @app.route("/register")
 def register():
   return render_template("register.html")
 
+
+#Connects webstie to the database
 def create_connection(db_file):
   try:
     conn = sqlite3.connect(db_file)
@@ -50,6 +55,8 @@ def create_connection(db_file):
     print(e)
   return conn
 
+
+#Registers a user and sends information to the database
 @app.route('/register', methods=['POST'])
 def my_form():
   if request.method == "POST":
@@ -71,10 +78,14 @@ def my_form():
       connection.close()
   return redirect('/')
 
+
+#Login page
 @app.route("/login")
 def login():
  return render_template("/login.html")
  
+
+#Checks users input for login matches the information in the database
 @app.route("/login", methods=['POST'])
 def login_check():
   if request.method == "POST":
