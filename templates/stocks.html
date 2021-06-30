@@ -49,25 +49,16 @@
 
     {% if date_valid == True%}
     <div class="display_data">
+
+        <p>Comapany: {{stock_name}}</p>
         
-        <p>Open: $</p>
-        {{find_data.get("open")}}
-
-        <br>
+        <p>Open: ${{find_data.get("open")}}</p>
         
-        <p>High: $</p>
-        {{find_data.get("high")}}
-        
-        <br>
+        <p>High: ${{find_data.get("open")}}</p>
 
-        <p>Low: $</p>
-        {{find_data.get("low")}}
+        <p>Low: ${{find_data.get("low")}}</p>
 
-        <br>
-
-        <p>Close: $</p>
-        {{find_data.get("close")}}
-
+        <p>Close: ${{find_data.get("low")}}</p>
 
     </div>
     {%endif%}
@@ -75,6 +66,5 @@
 
 
 </div>
-
 
 {% endblock %}

@@ -69,6 +69,13 @@ body {
   padding: 5px;
 }
 
+.Login_correct {
+  background-color: #17d42d;
+  border: 2px solid green;
+  border-radius: 5px;
+  padding: 5px;
+}
+
 
 /* Input formatting */
 

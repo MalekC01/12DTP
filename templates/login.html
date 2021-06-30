@@ -1,29 +1,39 @@
 {% extends 'layout.html' %}
 {% block content %}
-<center>
-<div class="login">
 
-<form method="POST">
-    <b>
-        
-    {% if successful == False%}
-        <div class="login_unsuccessful">
-            <p>The passowrd or email is incorrect. <br>
-                Please try again.</p>    
+    <div class="login_box">
+        <center>
+        <div class="login">
+        <form method="POST">
+            <b>
+                
+            {% if successful == False %}
+                <div class="login_unsuccessful">
+                    <p>The password or email is incorrect. <br>
+                        Please try again.</p>    
+                </div>
+            {%endif%}
+
+            {% if currently_logged_in == True%}
+                <div class="Login_correct">
+                    <p>Login Successful.</p>
+                 </div>
+            {%endif%}
+
+            <label>Username</label><br>
+            <input name="username" type="email"><br><br>
+
+            <label>Password</label><br>
+            <input name="password" type="password"><br><br>
+
+            </b>
+
+            <input type="submit" value="Login">
+        </form>
+
         </div>
-    {%endif%}
+        </center>
 
-    <label>Username</label><br>
-    <input name="username" type="email"><br><br>
+    </div>
 
-    <label>Password</label><br>
-    <input name="password" type="password"><br><br>
-
-    </b>
-
-    <input type="submit" value="Login">
-</form>
-
-</div>
-</center>
 {% endblock %}

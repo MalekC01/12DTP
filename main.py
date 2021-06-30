@@ -18,6 +18,7 @@ def stock_data():
   result = None
   date_valid = None
   find_data = None
+  stock_name = None
   if request.method == "POST":
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
@@ -31,10 +32,11 @@ def stock_data():
     print(date_valid)
     print(date_string)
   
-    find_data = stock.get_data(stock_name, date_string)
-    print(find_data)
+    if result == True and date_valid == True:
+      find_data = stock.get_data(stock_name, date_string)
+      print(find_data)
 
-  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data)
+  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name)
 
 @app.route("/register")
 def register():
@@ -71,7 +73,7 @@ def my_form():
 
 @app.route("/login")
 def login():
- return render_template("login.html")
+ return render_template("/login.html")
  
 @app.route("/login", methods=['POST'])
 def login_check():
@@ -85,13 +87,18 @@ def login_check():
     login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
     cur.execute(login_query, (username, password))
     print((username, password))
+    currently_logged_in = None
     successful = None
     if not cur.fetchone():
       successful = False
-      return render_template("/login.html", successful = successful)
+      print(currently_logged_in)
+      return render_template("/login.html", successful = successful, currently_logged_in = currently_logged_in)
     else:
       successful = True
-      return render_template("/")
+      currently_logged_in = True
+      print(currently_logged_in)
+      return render_template("/login.html", currently_logged_in = currently_logged_in)
+    
       
 
 if __name__ == '__main__':
