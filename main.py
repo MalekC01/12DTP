@@ -13,16 +13,24 @@ app = Flask(__name__)
 def home():
   return render_template('home.html')
 
+
+
 #Stock page and api
 @app.route('/stocks', methods = ["GET", "POST"]) 
 def stock_data():
+
+  stock.clear_data()
+
   result = None
   date_valid = None
   find_data = None
   stock_name = None
+  favourite = None
   if request.method == "POST":
+    print("POST called")
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
+    
 
     print(stock_name, date)
 
@@ -36,8 +44,20 @@ def stock_data():
     if result == True and date_valid == True:
       find_data = stock.get_data(stock_name, date_string)
       print(find_data)
+    
+    """if request.form.get("Add to favoutires"):
+      favourite = True
+    
+    print(favourite)
 
-  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name)
+    if favourite == True:
+      sql_query = '''INSERT INTO Stocks (ticker) VALUES (?)'''
+      cur = connection.cursor()
+      cur.execute(sql_query, (stock_name))
+      connection.commit()"""
+
+
+  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite)
 
 
 #Register Page

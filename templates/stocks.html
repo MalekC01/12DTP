@@ -4,7 +4,7 @@
 <div class="User_input">
 
     <b><h2>See Histoical Data About A Stock.</h2>
-    <form method="POST">
+    <form name="find_data" method="POST">
 
         {% if result == False%}
         <br>
@@ -54,12 +54,15 @@
         
         <p>Open: ${{find_data.get("open")}}</p>
         
-        <p>High: ${{find_data.get("open")}}</p>
+        <p>High: ${{find_data.get("high")}}</p>
 
         <p>Low: ${{find_data.get("low")}}</p>
 
-        <p>Close: ${{find_data.get("low")}}</p>
+        <p>Close: ${{find_data.get("close")}}</p>
 
+        <form method="POST">
+        <input type="submit" value="Add to favourites">
+        </form>
     </div>
     {%endif%}
 

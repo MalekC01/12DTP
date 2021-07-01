@@ -62,6 +62,20 @@ def is_date_valid(date):
   return True, info_of_date
 
 
+data_date = []
+date_high = []
+date_low = []
+date_open = []
+date_close = []
+
+def clear_data():
+  data_date = []
+  date_high = []
+  date_low = []
+  date_open = []
+  date_close = []
+
+
 #takes the input from the stock name a date and gets the data from the api
 def get_data(stock_name, date_string):
 
@@ -69,11 +83,7 @@ def get_data(stock_name, date_string):
 
   data = requests.get(api_url).json()
 
-  data_date = []
-  date_high = []
-  date_low = []
-  date_open = []
-  date_close = []
+  
 
   for i in range(len(data)):
     data_date.append(data[i]['date'])
@@ -82,6 +92,10 @@ def get_data(stock_name, date_string):
     date_open.append(data[i]['open'])
     date_close.append(data[i]['close'])
 
-  raw_data = {"date": data_date, "high": date_high, "low": date_low, "open": date_open, "close": date_close}
+  raw_data = {"date": data_date,
+              "high": date_high,
+              "low": date_low,
+              "open": date_open, 
+              "close": date_close}
   
   return raw_data

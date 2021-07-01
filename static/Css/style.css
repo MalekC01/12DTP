@@ -105,6 +105,10 @@ input[type="submit"] {
 input[type="submit"]:hover {
   background-color: #0047b3;
 }
+
+input[type="date"]{
+  list-style: none;
+}
 /* All CSS for navigation bar*/
 
 .topnav {
