@@ -11,7 +11,7 @@ app = Flask(__name__)
 #Home page
 @app.route('/')
 def home():
-  return render_template('home.html')
+  return render_template('home.html', logged_in = False)
 
 
 
@@ -45,7 +45,7 @@ def stock_data():
       find_data = stock.get_data(stock_name, date_string)
       print(find_data)
     
-    """if request.form.get("Add to favoutires"):
+    """if request.form.get("Add to favourites"):
       favourite = True
     
     print(favourite)
@@ -57,16 +57,16 @@ def stock_data():
       connection.commit()"""
 
 
-  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite)
+  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = False)
 
 
 #Register Page
 @app.route("/register")
 def register():
-  return render_template("register.html")
+  return render_template("register.html", logged_in = False)
 
 
-#Connects webstie to the database
+#Connects website to the database
 def create_connection(db_file):
   try:
     conn = sqlite3.connect(db_file)
@@ -102,8 +102,9 @@ def my_form():
 #Login page
 @app.route("/login")
 def login():
- return render_template("/login.html")
+ return render_template("/login.html", logged_in = False)
  
+
 
 #Checks users input for login matches the information in the database
 @app.route("/login", methods=['POST'])
@@ -118,17 +119,15 @@ def login_check():
     login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
     cur.execute(login_query, (username, password))
     print((username, password))
-    currently_logged_in = None
-    successful = None
+    logged_in = False
     if not cur.fetchone():
-      successful = False
-      print(currently_logged_in)
-      return render_template("/login.html", successful = successful, currently_logged_in = currently_logged_in)
+      logged_in = None
+      print(logged_in)
+      return render_template("/login.html", logged_in = logged_in)
     else:
-      successful = True
-      currently_logged_in = True
-      print(currently_logged_in)
-      return render_template("/login.html", currently_logged_in = currently_logged_in)
+      logged_in = True
+      print(logged_in)
+      return render_template("/login.html", logged_in = logged_in)
     
       
 

@@ -7,14 +7,14 @@
         <form method="POST">
             <b>
                 
-            {% if successful == False %}
+            {% if logged_in == None %}
                 <div class="login_unsuccessful">
                     <p>The password or email is incorrect. <br>
                         Please try again.</p>    
                 </div>
             {%endif%}
 
-            {% if currently_logged_in == True%}
+            {% if logged_in == True%}
                 <div class="Login_correct">
                     <p>Login Successful.</p>
                  </div>
