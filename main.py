@@ -1,5 +1,6 @@
 from flask.templating import render_template_string
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect, session
+from flask_session import Session
 from datetime import datetime
 import sqlite3 
 from sqlite3 import Error
@@ -8,16 +9,39 @@ print(stock.token)
 print(stock.test("yes"))
 app = Flask(__name__)
 
+logged_in = None
+
+@app.route('/set/')
+def set():
+  session['key'] = 'value'
+  return 'ok'
+
+@app.route('/get/')
+def get():
+  return session.get('key', 'not set')
+
+
+
+def check_logged_in():
+  if 'email' in session:
+    return True
+  return False
+
+
 #Home page
 @app.route('/')
 def home():
-  return render_template('home.html', logged_in = False)
+  logged_in = check_logged_in()
+  return render_template('home.html', logged_in = logged_in)
 
 
 
 #Stock page and api
 @app.route('/stocks', methods = ["GET", "POST"]) 
 def stock_data():
+
+  logged_in = check_logged_in()
+  print(logged_in)
 
   stock.clear_data()
 
@@ -57,13 +81,13 @@ def stock_data():
       connection.commit()"""
 
 
-  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = False)
+  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in)
 
 
 #Register Page
 @app.route("/register")
 def register():
-  return render_template("register.html", logged_in = False)
+  return render_template("register.html", logged_in = logged_in)
 
 
 #Connects website to the database
@@ -102,7 +126,7 @@ def my_form():
 #Login page
 @app.route("/login")
 def login():
- return render_template("/login.html", logged_in = False)
+ return render_template("/login.html", logged_in = logged_in)
  
 
 
@@ -110,18 +134,18 @@ def login():
 @app.route("/login", methods=['POST'])
 def login_check():
   if request.method == "POST":
-    username = request.form.get("username")
+    session['email'] = request.form.get("email")
     password = request.form.get("password")
+    email = session['email']
   
     connection = create_connection('user_database.db')
     cur = connection.cursor()
     
     login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
-    cur.execute(login_query, (username, password))
-    print((username, password))
-    logged_in = False
+    cur.execute(login_query, (email, password))
+    print((email, password))
     if not cur.fetchone():
-      logged_in = None
+      logged_in = False
       print(logged_in)
       return render_template("/login.html", logged_in = logged_in)
     else:
@@ -129,7 +153,16 @@ def login_check():
       print(logged_in)
       return render_template("/login.html", logged_in = logged_in)
     
-      
+    
 
-if __name__ == '__main__':
+
+
+
+if __name__ == '__main__': 
+  app.secret_key = 'super secret key'
+  app.config['SESSION_TYPE'] = 'filesystem'
+
+  sess = Session()
+  sess.init_app(app)
+
   app.run(port=8080, debug=True)

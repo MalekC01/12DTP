@@ -38,6 +38,7 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  margin-top: 10%;
 }
 
 .display_data {
@@ -109,6 +110,10 @@ input[type="submit"]:hover {
 input[type="date"]{
   list-style: none;
 }
+
+input[value="Logout"] {
+  border-radius: 0px;
+}
 /* All CSS for navigation bar*/
 
 .topnav {
@@ -136,6 +141,9 @@ input[type="date"]{
 .Stock_Info {
   margin: 100px;
 }
+
+
+
 
 
 /* Fonts and sizing */
