@@ -54,7 +54,7 @@ def stock_data():
     print("POST called")
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
-    
+    print(request.form)
 
     print(stock_name, date)
 
@@ -68,6 +68,8 @@ def stock_data():
     if result == True and date_valid == True:
       find_data = stock.get_data(stock_name, date_string)
       print(find_data)
+
+      session["stock_1"] = find_data
     
     """if request.form.get("Add to favourites"):
       favourite = True

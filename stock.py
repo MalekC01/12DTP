@@ -81,21 +81,18 @@ def get_data(stock_name, date_string):
 
   api_url =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/date/{date_string}?&token={token}&chartByDay=true"
 
-  data = requests.get(api_url).json()
-
+  data = requests.get(api_url).json()[0]
   
+  data_date.append(data['date'])
+  date_high.append(data['high'])
+  date_low.append(data['low'])
+  date_open.append(data['open'])
+  date_close.append(data['close'])
 
-  for i in range(len(data)):
-    data_date.append(data[i]['date'])
-    date_high.append(data[i]['high'])
-    date_low.append(data[i]['low'])
-    date_open.append(data[i]['open'])
-    date_close.append(data[i]['close'])
-
-  raw_data = {"date": data_date,
-              "high": date_high,
-              "low": date_low,
-              "open": date_open, 
-              "close": date_close}
+  raw_data = {"date": data_date[0],
+              "high": date_high[0],
+              "low": date_low[0],
+              "open": date_open[0], 
+              "close": date_close[0]}
   
   return raw_data
