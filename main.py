@@ -32,7 +32,10 @@ def comparison_stock_exists():
     return True
   return False
 
-
+@app.route('/log_out')
+def sign_out():
+  session.pop('email')
+  return redirect('/')
 
 #Home page
 @app.route('/')

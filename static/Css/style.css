@@ -1,7 +1,6 @@
 body {
   font-family: "Helvetica";
   margin: 0px;
-  overflow-y :scroll;
 }
 
 .Register-Form {
@@ -20,10 +19,6 @@ body {
   background-color: #f2f2f2;
   border: 2px solid grey;
   border-radius: 5px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   padding: 50px;
   text-align: left;
 }
@@ -34,13 +29,9 @@ body {
   background-color: #f2f2f2;
   border: 2px solid grey;
   border-radius: 5px;
-  position: fixed;
   padding: 25px;
-  /*top: 50%;*/
-  /*left: 50%;*/
-  transform: translate(50%, 50%);
-  margin-top: 10%;
-  margin-bottom: 10%;
+  margin-top: 5%;
+  width: 25%;
 }
 
 .display_data {
