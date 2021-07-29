@@ -27,6 +27,12 @@ def check_logged_in():
     return True
   return False
 
+def comparison_stock_exists():
+  if 'stock_1' in session:
+    return True
+  return False
+
+
 
 #Home page
 @app.route('/')
@@ -44,6 +50,15 @@ def stock_data():
   print(logged_in)
 
   stock.clear_data()
+
+  session.pop('stock_1', None)
+
+  print(session)
+
+
+  stock_exists = comparison_stock_exists()
+
+
 
   result = None
   date_valid = None
@@ -67,9 +82,11 @@ def stock_data():
   
     if result == True and date_valid == True:
       find_data = stock.get_data(stock_name, date_string)
-      print(find_data)
+      print("find data: " + str(find_data))
 
       session["stock_1"] = find_data
+      print(session)
+      stock_exists = comparison_stock_exists()
     
     """if request.form.get("Add to favourites"):
       favourite = True
@@ -83,14 +100,21 @@ def stock_data():
       connection.commit()"""
 
 
-  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in)
+  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
 
 
 #Register Page
 @app.route("/register")
 def register():
+  logged_in = check_logged_in()
   return render_template("register.html", logged_in = logged_in)
 
+
+#Profile
+@app.route("/profile")
+def profile():
+  logged_in = check_logged_in()
+  return render_template("profile.html", logged_in = logged_in)
 
 #Connects website to the database
 def create_connection(db_file):
