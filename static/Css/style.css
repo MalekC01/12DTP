@@ -3,43 +3,26 @@ body {
   margin: 0px;
 }
 
-.Register-Form {
-  background-color: #f2f2f2;
-  border: 2px solid grey;
-  border-radius: 5px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 50px;
-  text-align: left;
-}
-
-.login {
-  background-color: #f2f2f2;
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 50px;
-  text-align: left;
-}
 
 /* Css for stock page */
 
-.User_input {
+main{
   background-color: #f2f2f2;
   border: 2px solid grey;
   border-radius: 5px;
-  padding: 25px;
-  margin-top: 5%;
-  width: 25%;
+  padding: 3%;
+  width: fit-content;
+  margin: auto;
+  margin-top: 2%;
+  margin-bottom: 2%;
 }
 
-.display_data {
+.display_data{
   background-color: #f2f2f2;
   border: 2px solid grey;
   border-radius: 5px;
-  padding: 25px;
-  margin: 50px;
+  padding: 3%;
+  margin: auto;
 }
 
 /* Error messages */
