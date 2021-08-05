@@ -11,6 +11,13 @@ app = Flask(__name__)
 
 logged_in = None
 
+
+#https://stackoverflow.com/questions/22383458/how-to-obtain-values-of-parameters-of-get-request-in-flask
+#https://www.w3schools.com/xml/ajax_intro.asp
+
+
+
+
 #starts the session
 @app.route('/set/')
 def set():
@@ -38,6 +45,7 @@ def comparison_stock_exists():
 def sign_out():
   session.pop('email', None)
   return render_template('logout.html', logged_in = logged_in)
+
 
 
 #Home page

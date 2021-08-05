@@ -127,3 +127,14 @@ input[value="Logout"] {
 .Header{
   margin: 20px;
 }
+
+.logout_page a {
+  background-color: #0066ff;
+  border: none;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
+  text-decoration: none;
+}
