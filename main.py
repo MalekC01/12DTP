@@ -17,7 +17,6 @@ logged_in = None
 
 
 
-
 #starts the session
 @app.route('/set/')
 def set():
@@ -39,6 +38,31 @@ def comparison_stock_exists():
   if 'stock_1' in session:
     return True
   return False
+
+@app.route('/compare_stocks')
+def compare_stocks():
+  print("Compare works")
+  compare = True
+  return render_template (compare = compare)
+
+
+@app.route('/add_to_favourites')
+def add_to_favourites():
+  print("add to favourites works")
+  connection = create_connection('user_database.db')
+  try:
+    sql_query = '''INSERT INTO Favourites (email, stock_name, date) VALUES (?, ?, ?);'''
+    cur = connection.cursor()
+    cur.execute(sql_query, (session['email'], session["stock_name"], session['stock_1']['date']))
+    connection.commit()
+  except:
+    print("Something went wrong saving your data. Please try agian.")
+
+  finally:
+    if connection:
+      connection.close()
+  return redirect('/')
+
 
 #once session has started log out will end the session
 @app.route('/logout')
@@ -76,6 +100,7 @@ def login():
 #Registers a user and sends information to the database
 @app.route('/register', methods=['POST'])
 def my_form():
+  
   if request.method == "POST":
     name = request.form.get("Name")
     email = request.form.get("Email")
@@ -108,10 +133,8 @@ def create_connection(db_file):
 @app.route("/login", methods=['POST'])
 def login_check():
   if request.method == "POST":
-    session['email'] = request.form.get("email")
     password = request.form.get("password")
-    email = session['email']
-  
+    email = request.form.get("email")
     connection = create_connection('user_database.db')
     cur = connection.cursor()
     
@@ -125,6 +148,7 @@ def login_check():
     else:
       logged_in = True
       print(logged_in)
+      session['email'] = email
       return render_template("/login.html", logged_in = logged_in)
 
 #Stock page and api
@@ -167,20 +191,18 @@ def stock_data():
       find_data = stock.get_data(stock_name, date_string)
       print("find data: " + str(find_data))
 
+      session["stock_name"] = stock_name
       session["stock_1"] = find_data
       print(session)
       stock_exists = comparison_stock_exists()
     
-    """if request.form.get("Add to favourites"):
-      favourite = True
-    
-    print(favourite)
+
 
     if favourite == True:
       sql_query = '''INSERT INTO Stocks (ticker) VALUES (?)'''
       cur = connection.cursor()
       cur.execute(sql_query, (stock_name))
-      connection.commit()"""
+      connection.commit()
 
 
   return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)

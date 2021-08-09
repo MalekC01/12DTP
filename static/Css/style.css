@@ -25,7 +25,33 @@ main{
   margin: auto;
 }
 
-/* Error messages */
+.display_data button{
+  background-color: #0066ff;
+  border: none;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.display_data button:hover{
+  background-color: #0047b3;
+}
+
+.compare button{
+  background-color: #0066ff;
+  border: none;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.compare button:hover{
+  background-color: #0047b3;
+}
 
 .date_not_valid {
   background-color: #ef4943;
@@ -33,6 +59,10 @@ main{
   border-radius: 5px;
   padding: 5px;
 }
+
+/* Error messages */
+
+
 
 .stock_not_valid {
   background-color: #ef4943;
@@ -137,4 +167,11 @@ input[value="Logout"] {
   width: 100%;
   border-radius: 5px;
   text-decoration: none;
+}
+
+.footer a{
+  text-decoration: none;
+  justify-content: center;
+  margin: 20px;
+  color: black;
 }

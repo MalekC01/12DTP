@@ -20,8 +20,6 @@
         <label>Search a stock (Use the stocks Ticker):</label>
         <br>
         <input type="Name" name="Stock_name" placeholder="Ticker">
-
-        <br>
         <br>
 
         {% if date_valid == False %}
@@ -39,17 +37,10 @@
         <br>
 
         <input type="submit" value="Search Stock">
-        <br> <br>
-        
-        {% if stock_exists %}
-            <input type="submit" value="Compare">
-        {% endif%}
         <br>
         <br>
 
     </form>
-
-
 
 
     {% if date_valid == True%}
@@ -65,9 +56,21 @@
 
         <p>Close: ${{find_data.get("close")}}</p>
 
-        <form method="POST">
-        <input type="submit" value="Add to favourites">
-        </form>
+        <button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to favourites</button>
+    
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type=text/javascript>
+            $(function() {
+            $('#add_to_favourites').on('click', function(e) {
+            e.preventDefault()
+            $.getJSON('/add_to_favourites',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+    </script>   
     </div>
     {%endif%}
 
