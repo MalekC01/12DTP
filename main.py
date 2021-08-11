@@ -48,13 +48,15 @@ def compare_stocks():
 
 @app.route('/add_to_favourites')
 def add_to_favourites():
-  print("add to favourites works")
+  print("Favourites Running")
   connection = create_connection('user_database.db')
   try:
+    
     sql_query = '''INSERT INTO Favourites (email, stock_name, date) VALUES (?, ?, ?);'''
     cur = connection.cursor()
     cur.execute(sql_query, (session['email'], session["stock_name"], session['stock_1']['date']))
     connection.commit()
+
   except:
     print("Something went wrong saving your data. Please try agian.")
 
@@ -82,6 +84,7 @@ def home():
 @app.route("/profile")
 def profile():
   logged_in = check_logged_in()
+  SQL_QUERY = ''' SELECT (stock_name, date) FROM Favourites WHERE email = ?;'''
   return render_template("profile.html", logged_in = logged_in)
 
 #Register Page
