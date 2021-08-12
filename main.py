@@ -50,19 +50,27 @@ def compare_stocks():
 def add_to_favourites():
   print("Favourites Running")
   connection = create_connection('user_database.db')
-  try:
-    
-    sql_query = '''INSERT INTO Favourites (email, stock_name, date) VALUES (?, ?, ?);'''
-    cur = connection.cursor()
-    cur.execute(sql_query, (session['email'], session["stock_name"], session['stock_1']['date']))
-    connection.commit()
+  
+  print(session['email'])
 
-  except:
-    print("Something went wrong saving your data. Please try agian.")
+  find_id = '''SELECT id FROM User WHERE username_email = "?";'''
+  cur = connection.cursor()
+  uid = cur.execute(find_id, (session['email']))
+  connection.commit()
+  print(uid)
 
-  finally:
-    if connection:
-      connection.close()
+
+  sql_query = '''INSERT INTO Favourites (uid, stock_name, date) VALUES (?, ?, ?);'''
+  cur = connection.cursor()
+  cur.execute(sql_query, (uid, session["stock_name"], session['stock_1']['date']))
+  connection.commit()
+
+  #except:
+    #print("Something went wrong saving your data. Please try agian.")
+
+  #finally:
+  if connection:
+    connection.close()
   return redirect('/')
 
 
