@@ -59,6 +59,17 @@ def check_in_favourites():
     return True
   return False
 
+@app.route('/remove_from_favourites')
+def remove_from_favoruites():
+  find_id = '''DELETE (?) FROM Favourites WHERE uid = (?);'''
+  connection = create_connection('user_database.db')
+  cur = connection.cursor()
+  stocks = cur.execute(find_id, (session['stock_name'], session['uid'],))
+  connection.commit()  
+
+  if stocks is not None and session['stock_name'] in stocks:
+    return True
+  return False
 
 
 
@@ -100,9 +111,17 @@ def home():
 #Profile page
 @app.route("/profile")
 def profile():
+  favourite_stocks = None
   logged_in = check_logged_in()
-  SQL_QUERY = ''' SELECT (stock_name, date) FROM Favourites WHERE email = ?;'''
-  return render_template("profile.html", logged_in = logged_in)
+
+  connection = create_connection('user_database.db')
+  sql_query = '''SELECT stock_name FROM Favourites WHERE uid = ?;'''
+  cur = connection.cursor()
+  stocks = cur.execute(sql_query, (session['uid'],))
+  favourite_stocks = stocks.fetchall()
+  connection.commit()
+  print(favourite_stocks)
+  return render_template("profile.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
 
 #Register Page
 @app.route("/register")
