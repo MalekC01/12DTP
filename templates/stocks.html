@@ -56,6 +56,8 @@
 
         <p>Close: ${{find_data.get("close")}}</p>
 
+
+        {%if not in_fav%}
         <button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to favourites</button>
     
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -70,8 +72,30 @@
             return false;
           });
         });
-    </script>   
+        </script> 
+        {%endif%}
+
+        {% if in_fav %}
+        <button id="remove_from_favourites" onclick="remove_from_favourites(stock_name)">Remove from favourites</button>
+    
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type=text/javascript>
+            $(function() {
+            $('#add_to_favourites').on('click', function(e) {
+            e.preventDefault()
+            $.getJSON('/add_to_favourites',
+                function(data) {
+              //do nothing
+            });
+            return false;
+          });
+        });
+        </script> 
+        {%endif%}
+
     </div>
+
+
     {%endif%}
 
 

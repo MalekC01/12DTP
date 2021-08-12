@@ -39,11 +39,27 @@ def comparison_stock_exists():
     return True
   return False
 
-@app.route('/compare_stocks')
 def compare_stocks():
   print("Compare works")
   compare = True
   return render_template (compare = compare)
+
+
+def check_in_favourites():
+  find_id = '''SELECT stock_name FROM Favourites WHERE uid = (?);'''
+  connection = create_connection('user_database.db')
+  cur = connection.cursor()
+  c_stocks = cur.execute(find_id, (session['uid'],))
+  stocks = c_stocks.fetchone()
+  connection.commit()  
+  
+  print(stocks)
+
+  if stocks is not None and session['stock_name'] in stocks:
+    return True
+  return False
+
+
 
 
 @app.route('/add_to_favourites')
@@ -52,25 +68,19 @@ def add_to_favourites():
   connection = create_connection('user_database.db')
   
   print(session['email'])
+ 
+  try:
+    sql_query = '''INSERT INTO Favourites (uid, stock_name) VALUES (?, ?);'''
+    cur = connection.cursor()
+    cur.execute(sql_query, (session['uid'], session["stock_name"]))
+    connection.commit()
 
-  find_id = '''SELECT id FROM User WHERE username_email = "?";'''
-  cur = connection.cursor()
-  uid = cur.execute(find_id, (session['email']))
-  connection.commit()
-  print(uid)
+  except:
+    print("Something went adding to favourites. Please try agian.")
 
-
-  sql_query = '''INSERT INTO Favourites (uid, stock_name, date) VALUES (?, ?, ?);'''
-  cur = connection.cursor()
-  cur.execute(sql_query, (uid, session["stock_name"], session['stock_1']['date']))
-  connection.commit()
-
-  #except:
-    #print("Something went wrong saving your data. Please try agian.")
-
-  #finally:
-  if connection:
-    connection.close()
+  finally:
+    if connection:
+      connection.close()
   return redirect('/')
 
 
@@ -79,7 +89,6 @@ def add_to_favourites():
 def sign_out():
   session.pop('email', None)
   return render_template('logout.html', logged_in = logged_in)
-
 
 
 #Home page
@@ -123,6 +132,8 @@ def my_form():
     cur.execute(sql_query, (name, email, password))
     connection.commit()
 
+
+
   except:
     print("Something went wrong saving your data. Please try agian.")
 
@@ -160,12 +171,21 @@ def login_check():
       logged_in = True
       print(logged_in)
       session['email'] = email
+
+      find_id = '''SELECT id FROM User WHERE username_email = (?);'''
+      cur = connection.cursor()
+      c_uid = cur.execute(find_id, (session['email'],))
+      uid = c_uid.fetchone()
+      connection.commit()
+      session['uid'] = uid[0]
+      print(session['uid'])
       return render_template("/login.html", logged_in = logged_in)
 
 #Stock page and api
 @app.route('/stocks', methods = ["GET", "POST"]) 
 def stock_data():
 
+  in_fav = False
   logged_in = check_logged_in()
   print(logged_in)
 
@@ -206,17 +226,12 @@ def stock_data():
       session["stock_1"] = find_data
       print(session)
       stock_exists = comparison_stock_exists()
-    
+
+      in_fav = check_in_favourites()
 
 
-    if favourite == True:
-      sql_query = '''INSERT INTO Stocks (ticker) VALUES (?)'''
-      cur = connection.cursor()
-      cur.execute(sql_query, (stock_name))
-      connection.commit()
 
-
-  return render_template("stocks.html", result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
+  return render_template("stocks.html", in_fav = in_fav, result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
 
 
 if __name__ == '__main__': 
