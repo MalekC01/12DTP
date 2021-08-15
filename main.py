@@ -11,12 +11,6 @@ app = Flask(__name__)
 
 logged_in = None
 
-
-#https://stackoverflow.com/questions/22383458/how-to-obtain-values-of-parameters-of-get-request-in-flask
-#https://www.w3schools.com/xml/ajax_intro.asp
-
-
-
 #starts the session
 @app.route('/set/')
 def set():
@@ -44,57 +38,6 @@ def compare_stocks():
   compare = True
   return render_template (compare = compare)
 
-
-def check_in_favourites():
-  find_id = '''SELECT stock_name FROM Favourites WHERE uid = (?);'''
-  connection = create_connection('user_database.db')
-  cur = connection.cursor()
-  c_stocks = cur.execute(find_id, (session['uid'],))
-  stocks = c_stocks.fetchone()
-  connection.commit()  
-  
-  print(stocks)
-
-  if stocks is not None and session['stock_name'] in stocks:
-    return True
-  return False
-
-@app.route('/remove_from_favourites')
-def remove_from_favoruites():
-  find_id = '''DELETE (?) FROM Favourites WHERE uid = (?);'''
-  connection = create_connection('user_database.db')
-  cur = connection.cursor()
-  stocks = cur.execute(find_id, (session['stock_name'], session['uid'],))
-  connection.commit()  
-
-  if stocks is not None and session['stock_name'] in stocks:
-    return True
-  return False
-
-
-
-@app.route('/add_to_favourites')
-def add_to_favourites():
-  print("Favourites Running")
-  connection = create_connection('user_database.db')
-  
-  print(session['email'])
- 
-  try:
-    sql_query = '''INSERT INTO Favourites (uid, stock_name) VALUES (?, ?);'''
-    cur = connection.cursor()
-    cur.execute(sql_query, (session['uid'], session["stock_name"]))
-    connection.commit()
-
-  except:
-    print("Something went adding to favourites. Please try agian.")
-
-  finally:
-    if connection:
-      connection.close()
-  return redirect('/')
-
-
 #once session has started log out will end the session
 @app.route('/logout')
 def sign_out():
@@ -108,20 +51,6 @@ def home():
   logged_in = check_logged_in()
   return render_template('home.html', logged_in = logged_in)
 
-#Profile page
-@app.route("/profile")
-def profile():
-  favourite_stocks = None
-  logged_in = check_logged_in()
-
-  connection = create_connection('user_database.db')
-  sql_query = '''SELECT stock_name FROM Favourites WHERE uid = ?;'''
-  cur = connection.cursor()
-  stocks = cur.execute(sql_query, (session['uid'],))
-  favourite_stocks = stocks.fetchall()
-  connection.commit()
-  print(favourite_stocks)
-  return render_template("profile.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
 
 #Register Page
 @app.route("/register")
@@ -150,9 +79,6 @@ def my_form():
     cur = connection.cursor()
     cur.execute(sql_query, (name, email, password))
     connection.commit()
-
-
-
   except:
     print("Something went wrong saving your data. Please try agian.")
 
@@ -199,6 +125,22 @@ def login_check():
       session['uid'] = uid[0]
       print(session['uid'])
       return render_template("/login.html", logged_in = logged_in)
+
+#Profile page
+@app.route("/profile")
+def profile():
+  favourite_stocks = None
+  logged_in = check_logged_in()
+
+  connection = create_connection('user_database.db')
+  sql_query = '''SELECT stock_name FROM Favourites WHERE uid = ?;'''
+  cur = connection.cursor()
+  stocks = cur.execute(sql_query, (session['uid'],))
+  favourite_stocks = stocks.fetchall()
+  connection.commit()
+  print(favourite_stocks)
+  return render_template("profile.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
+
 
 #Stock page and api
 @app.route('/stocks', methods = ["GET", "POST"]) 
@@ -248,9 +190,67 @@ def stock_data():
 
       in_fav = check_in_favourites()
 
-
-
   return render_template("stocks.html", in_fav = in_fav, result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
+
+
+def check_in_favourites():
+  find_id = '''SELECT stock_name FROM Favourites WHERE uid = (?);'''
+  connection = create_connection('user_database.db')
+  cur = connection.cursor()
+  c_stocks = cur.execute(find_id, (session['uid'],))
+  stocks = c_stocks.fetchone()
+  connection.commit()  
+  
+  print(stocks)
+
+  if stocks is not None and session['stock_name'] in stocks:
+    return True
+  return False
+
+
+@app.route('/remove_from_favourites')
+def remove_from_favoruites():
+  
+  print(session['email'])
+  connection = create_connection('user_database.db')
+  print("remove from favourite is running.")
+  try:
+    remove_query = '''DELETE FROM Favourites WHERE uid = (?) AND stock_name = (?);'''
+    cur = connection.cursor()
+    remove_stock = cur.execute(remove_query, (session['uid'], session['stock_name']))
+    connection.commit() 
+
+  except:
+    print("Something went wrong removing from favourites. Please try agian.")
+
+  finally:
+    if connection:
+      connection.close()
+  return redirect('/profile')
+
+
+
+@app.route('/add_to_favourites')
+def add_to_favourites():
+  print("Favourites Running")
+  connection = create_connection('user_database.db')
+  
+  print(session['email'])
+ 
+  try:
+    sql_query = '''INSERT INTO Favourites (uid, stock_name) VALUES (?, ?);'''
+    cur = connection.cursor()
+    cur.execute(sql_query, (session['uid'], session["stock_name"]))
+    connection.commit()
+
+  except:
+    print("Something went adding to favourites. Please try agian.")
+
+  finally:
+    if connection:
+      connection.close()
+  return redirect('/')
+
 
 
 if __name__ == '__main__': 

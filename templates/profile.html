@@ -1,8 +1,20 @@
 {% extends 'layout.html' %}
 {% block content %}
 
+
+<h2>Favourite Stocks:</h2>
+
 {% for favourite_stock in favourite_stocks %}
-<a>{{favourite_stock[0]}}</a>
+<div class="favourites">
+<table>
+    <tr>
+        <th>Favourites:</th>
+    </tr>
+    <tr>
+        <td>{{favourite_stock[0]}}</td>
+    </tr>
+</table>
+</div>
 {%endfor%}
 
 {% endblock %}
