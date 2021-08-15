@@ -141,7 +141,7 @@ def profile():
   print(favourite_stocks)
   return render_template("profile.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
 
-
+#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
 #Stock page and api
 @app.route('/stocks', methods = ["GET", "POST"]) 
 def stock_data():
