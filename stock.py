@@ -80,10 +80,10 @@ def clear_data():
 def get_data(stock_name, date_string):
 
   api_url =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/date/{date_string}?&token={token}&chartByDay=true"
+  print(api_url)
 
   data = requests.get(api_url).json()[0]
   
-
   data_date = []
   date_high = []
   date_low = []
