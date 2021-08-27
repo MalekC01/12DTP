@@ -67,6 +67,7 @@ date_high = []
 date_low = []
 date_open = []
 date_close = []
+decription_blurb = []
 
 def clear_data():
   data_date = []
@@ -103,5 +104,6 @@ def get_data(stock_name, date_string):
               "open": date_open[0], 
               "close": date_close[0]}
   
-  print("data creation: " + str(raw_data) + str(stock_name))
+
   return raw_data
+

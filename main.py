@@ -1,10 +1,14 @@
 from flask.templating import render_template_string
+import requests
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_session import Session
 from datetime import datetime
 import sqlite3 
 from sqlite3 import Error
 import stock
+
+token =  "sk_bf573df0da8b4565b36735dda78f1755"
+
 print(stock.token)
 print(stock.test("yes"))
 app = Flask(__name__)
@@ -50,6 +54,12 @@ def sign_out():
 def home():
   logged_in = check_logged_in()
   return render_template('home.html', logged_in = logged_in)
+
+@app.route('/test')
+def test():
+  logged_in = check_logged_in()
+  return render_template('test.html', logged_in = logged_in)
+
 
 
 #Register Page
@@ -141,7 +151,7 @@ def profile():
   print(favourite_stocks)
   return render_template("profile.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
 
-#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
+
 #Stock page and api
 @app.route('/stocks', methods = ["GET", "POST"]) 
 def stock_data():
@@ -163,12 +173,15 @@ def stock_data():
   find_data = None
   stock_name = None
   favourite = None
+  info_for_graph = None
+  description = None
 
   if request.method == "POST":
     print("POST called")
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
     print(request.form)
+    stock_name.upper()
 
     print(stock_name, date)
 
@@ -185,12 +198,13 @@ def stock_data():
 
       session["stock_name"] = stock_name
       session["stock_1"] = find_data
-      print(session)
       stock_exists = comparison_stock_exists()
 
       in_fav = check_in_favourites()
+      info_for_graph = data_for_graph(stock_name)
+      description = get_description(stock_name)
 
-  return render_template("stocks.html", in_fav = in_fav, result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
+  return render_template("stocks.html", description = description, info_for_graph = info_for_graph, in_fav = in_fav, result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
 
 
 def check_in_favourites():
@@ -207,6 +221,40 @@ def check_in_favourites():
     return True
   return False
 
+
+def data_for_graph(stock_name):
+  test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/last-quarter?&token={token}"
+  print("test" + test_stock)
+  date_close = []
+  date_for_graph = []
+
+  result = requests.get(test_stock).json()
+  for result in result:
+    date_close.append(result['close'])
+
+  find_date = requests.get(test_stock).json()
+  for find_date in find_date:
+    date_for_graph.append(find_date['date']) 
+  print(date_close)
+
+  data_for_graph = [['Date', 'Price']]
+
+  for i in range(60):
+    data_for_graph.append([date_for_graph[i], date_close[i]])
+  print("data for the graph")
+  print(data_for_graph)
+  return data_for_graph
+
+def get_description(stock_name):
+  description_url = f"https://cloud.iexapis.com/stable/stock/{stock_name}/company?&token={token}"
+  decription = requests.get(description_url).json()
+
+  decription_blurb = []
+  decription_blurb.append(decription['description'])
+  print(decription_blurb)
+
+  return decription_blurb
+  
 
 @app.route('/remove_from_favourites')
 def remove_from_favoruites():

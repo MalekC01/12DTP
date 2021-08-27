@@ -2,11 +2,10 @@
 {% block content %}
 
 
-<div class="User_input">
+<div class="user_input">
 
     <b><h2>See Historical Data About A Stock.</h2>
     <form name="find_data" method="POST">
-
         {% if result == False%}
         <br>
         <div class="stock_not_valid">
@@ -46,7 +45,9 @@
     {% if date_valid == True%}
     <div class="display_data">
 
-        <p>Comapany: {{stock_name}}</p>
+        
+
+        <p>Company: {{stock_name}}</p>
         
         <p>Open: ${{find_data.get("open")}}</p>
         
@@ -56,6 +57,9 @@
 
         <p>Close: ${{find_data.get("close")}}</p>
 
+
+        <h2>About {{stock_name}}</h2>
+        <p>{{description[0]}}</p>
 
         {%if not in_fav%}
         <button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to favourites</button>
@@ -97,7 +101,40 @@
 
     </div>
 
-    {%endif%}
+
+
+   
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <script>
+      google.charts.load('current', {
+        packages: ['corechart', 'line']
+        });
+        google.charts.setOnLoadCallback(drawBasic);
+
+        function drawBasic() {
+        
+        var data = google.visualization.arrayToDataTable({{info_for_graph|tojson}});
+      
+        var options = {
+        hAxis: {
+        title: 'Date'
+        },
+        vAxis: {
+        title: 'Price ($USD)'
+        }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+
+        chart.draw(data, options);
+        }
+
+      </script>
+
+      <div id="chart_div"></div>
+
+      {%endif%}
 
 </div>
 {% endblock %}
