@@ -1,7 +1,7 @@
 import requests 
 import datetime
 
-token =  "sk_bf573df0da8b4565b36735dda78f1755"
+token =  "sk_65b776f2c4c242878b154ac942eaba27"
 
 
 #Tests stock to make sure it is a valid stock in the api

@@ -3,18 +3,13 @@
 
 
 <h2>Favourite Stocks:</h2>
-
-{% for favourite_stock in favourite_stocks %}
 <div class="favourites">
 <table>
-    <tr>
-        <th>Favourites:</th>
-    </tr>
-    <tr>
-        <td>{{favourite_stock[0]}}</td>
-    </tr>
+    {% for favourite_stock in favourite_stocks %}
+        <tr><td>{{favourite_stock[0]}}</td></tr>
+    {%endfor%}
 </table>
 </div>
-{%endfor%}
+
 
 {% endblock %}

@@ -7,7 +7,7 @@ import sqlite3
 from sqlite3 import Error
 import stock
 
-token =  "sk_bf573df0da8b4565b36735dda78f1755"
+token =  "sk_65b776f2c4c242878b154ac942eaba27"
 
 print(stock.token)
 print(stock.test("yes"))
@@ -201,7 +201,7 @@ def stock_data():
       stock_exists = comparison_stock_exists()
 
       in_fav = check_in_favourites()
-      info_for_graph = data_for_graph(stock_name)
+      info_for_graph = get_data_for_graph(stock_name)
       description = get_description(stock_name)
 
   return render_template("stocks.html", description = description, info_for_graph = info_for_graph, in_fav = in_fav, result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
@@ -222,9 +222,9 @@ def check_in_favourites():
   return False
 
 
-def data_for_graph(stock_name):
+def get_data_for_graph(stock_name):
   test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/last-quarter?&token={token}"
-  print("test" + test_stock)
+  print("Test: " + test_stock)
   date_close = []
   date_for_graph = []
 
@@ -235,7 +235,7 @@ def data_for_graph(stock_name):
   find_date = requests.get(test_stock).json()
   for find_date in find_date:
     date_for_graph.append(find_date['date']) 
-  print(date_close)
+  print("Date Close: " + str(date_close))
 
   data_for_graph = [['Date', 'Price']]
 
@@ -244,6 +244,7 @@ def data_for_graph(stock_name):
   print("data for the graph")
   print(data_for_graph)
   return data_for_graph
+
 
 def get_description(stock_name):
   description_url = f"https://cloud.iexapis.com/stable/stock/{stock_name}/company?&token={token}"
