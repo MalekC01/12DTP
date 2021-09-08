@@ -1,7 +1,7 @@
 import requests 
 import datetime
 
-token =  "sk_65b776f2c4c242878b154ac942eaba27"
+token =  "pk_bc4de76560684c36bff00ec3f7802ae9"
 
 
 #Tests stock to make sure it is a valid stock in the api
@@ -81,7 +81,6 @@ def clear_data():
 def get_data(stock_name, date_string):
 
   api_url =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/date/{date_string}?&token={token}&chartByDay=true"
-  print(api_url)
 
   data = requests.get(api_url).json()[0]
   

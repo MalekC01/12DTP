@@ -7,11 +7,10 @@ import sqlite3
 from sqlite3 import Error
 import stock
 
-token =  "sk_65b776f2c4c242878b154ac942eaba27"
+token =  "pk_bc4de76560684c36bff00ec3f7802ae9"
 
-print(stock.token)
-print(stock.test("yes"))
 app = Flask(__name__)
+
 
 logged_in = None
 
@@ -21,9 +20,11 @@ def set():
   session['key'] = 'value'
   return 'ok'
 
+
 @app.route('/get/')
 def get():
   return session.get('key', 'not set')
+
 
 #checks user has logged in 
 def check_logged_in():
@@ -31,16 +32,16 @@ def check_logged_in():
     return True
   return False
 
+
 #makes sure form submission is valid
 def comparison_stock_exists():
   if 'stock_1' in session:
     return True
   return False
 
-def compare_stocks():
-  print("Compare works")
-  compare = True
-  return render_template (compare = compare)
+
+
+
 
 #once session has started log out will end the session
 @app.route('/logout')
@@ -48,19 +49,11 @@ def sign_out():
   session.pop('email', None)
   return render_template('logout.html', logged_in = logged_in)
 
-
 #Home page
 @app.route('/')
 def home():
   logged_in = check_logged_in()
   return render_template('home.html', logged_in = logged_in)
-
-@app.route('/test')
-def test():
-  logged_in = check_logged_in()
-  return render_template('test.html', logged_in = logged_in)
-
-
 
 #Register Page
 @app.route("/register")
@@ -72,6 +65,9 @@ def register():
 @app.route("/login")
 def login():
  return render_template("/login.html", logged_in = logged_in)
+
+
+
 
 
 
@@ -97,6 +93,8 @@ def my_form():
       connection.close()
   return redirect('/')
 
+
+
 #Connects website to the database
 def create_connection(db_file):
   try:
@@ -105,6 +103,10 @@ def create_connection(db_file):
   except Error as e:
     print(e)
   return conn
+
+
+
+
 
 #Checks users input for login matches the information in the database
 @app.route("/login", methods=['POST'])
@@ -117,14 +119,11 @@ def login_check():
     
     login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
     cur.execute(login_query, (email, password))
-    print((email, password))
     if not cur.fetchone():
       logged_in = False
-      print(logged_in)
       return render_template("/login.html", logged_in = logged_in)
     else:
       logged_in = True
-      print(logged_in)
       session['email'] = email
 
       find_id = '''SELECT id FROM User WHERE username_email = (?);'''
@@ -133,8 +132,11 @@ def login_check():
       uid = c_uid.fetchone()
       connection.commit()
       session['uid'] = uid[0]
-      print(session['uid'])
       return render_template("/login.html", logged_in = logged_in)
+
+
+
+
 
 #Profile page
 @app.route("/profile")
@@ -148,8 +150,9 @@ def profile():
   stocks = cur.execute(sql_query, (session['uid'],))
   favourite_stocks = stocks.fetchall()
   connection.commit()
-  print(favourite_stocks)
   return render_template("profile.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
+
+
 
 
 #Stock page and api
@@ -158,13 +161,10 @@ def stock_data():
 
   in_fav = False
   logged_in = check_logged_in()
-  print(logged_in)
 
   stock.clear_data()
 
   session.pop('stock_1', None)
-
-  print(session)
 
   stock_exists = comparison_stock_exists()
 
@@ -177,30 +177,24 @@ def stock_data():
   description = None
 
   if request.method == "POST":
-    print("POST called")
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
-    print(request.form)
-    stock_name.upper()
-
-    print(stock_name, date)
+    stock_name = stock_name.upper()
+    print("stock name" + str(stock_name))
 
     result = stock.stock_is_valid(stock_name)
-    print(result)
 
     date_valid, date_string = stock.is_date_valid(date)
-    print(date_valid)
-    print(date_string)
   
     if result == True and date_valid == True:
       find_data = stock.get_data(stock_name, date_string)
-      print("find data: " + str(find_data))
 
       session["stock_name"] = stock_name
       session["stock_1"] = find_data
       stock_exists = comparison_stock_exists()
 
       in_fav = check_in_favourites()
+      print("in fav: " + str(in_fav))
       info_for_graph = get_data_for_graph(stock_name)
       description = get_description(stock_name)
 
@@ -215,7 +209,6 @@ def check_in_favourites():
   stocks = c_stocks.fetchone()
   connection.commit()  
   
-  print(stocks)
 
   if stocks is not None and session['stock_name'] in stocks:
     return True
@@ -224,7 +217,6 @@ def check_in_favourites():
 
 def get_data_for_graph(stock_name):
   test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/last-quarter?&token={token}"
-  print("Test: " + test_stock)
   date_close = []
   date_for_graph = []
 
@@ -235,14 +227,11 @@ def get_data_for_graph(stock_name):
   find_date = requests.get(test_stock).json()
   for find_date in find_date:
     date_for_graph.append(find_date['date']) 
-  print("Date Close: " + str(date_close))
 
   data_for_graph = [['Date', 'Price']]
 
   for i in range(60):
     data_for_graph.append([date_for_graph[i], date_close[i]])
-  print("data for the graph")
-  print(data_for_graph)
   return data_for_graph
 
 
@@ -252,7 +241,6 @@ def get_description(stock_name):
 
   decription_blurb = []
   decription_blurb.append(decription['description'])
-  print(decription_blurb)
 
   return decription_blurb
   
@@ -278,27 +266,25 @@ def remove_from_favoruites():
   return redirect('/profile')
 
 
-
 @app.route('/add_to_favourites')
 def add_to_favourites():
   print("Favourites Running")
   connection = create_connection('user_database.db')
-  
-  print(session['email'])
- 
   try:
+    refresh = True
     sql_query = '''INSERT INTO Favourites (uid, stock_name) VALUES (?, ?);'''
     cur = connection.cursor()
     cur.execute(sql_query, (session['uid'], session["stock_name"]))
     connection.commit()
-
+    
   except:
     print("Something went adding to favourites. Please try agian.")
 
   finally:
     if connection:
       connection.close()
-  return redirect('/')
+  return redirect('/stock', refresh = refresh)
+
 
 
 

@@ -7,11 +7,15 @@ body {
   text-align: left;
 }
 
+.chart_div{
+  border: 2px solid grey;
+}
+
+
 /* Css for stock page */
 
 main{
   padding: 3%;
-  width: fit-content;
   margin: auto;
   margin-top: 2%;
   margin-bottom: 2%;

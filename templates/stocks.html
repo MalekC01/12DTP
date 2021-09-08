@@ -45,6 +45,8 @@
     <br>
     <br>
 
+
+
     {% if date_valid == True%}
     <div class="display_data">
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
@@ -62,37 +64,41 @@
 
 
             var options = {
+              width: '10%',
+              height: '50%',
+              border: 2,
               hAxis: {
                title: 'Date',
                  textStyle: {
-                  color: '#01579b',
-                  fontSize: 20,
+                  color: 'black',
+                  fontSize: 15,
                   fontName: 'Arial',
                   bold: true,
-                  italic: true
+                  italic: false
                 },
                 titleTextStyle: {
-                  color: '#01579b',
-                  fontSize: 16,
+                  color: 'black',
+                  fontSize: 17,
                   fontName: 'Arial',
-                  bold: false,
-                  italic: true
+                  bold: true,
+                  italic: false
                 }
               },
               vAxis: {
-                title: 'Price ($USD)',
+                title: 'Price  ($USD)',
                 textStyle: {
-                  color: '#1a237e',
-                  fontSize: 24,
+                  color: 'black',
+                  fontSize: 15,
                   bold: true
                 },
                 titleTextStyle: {
-                  color: '#1a237e',
-                  fontSize: 24,
-                  bold: true
+                  color: 'black',
+                  fontSize: 17,
+                  bold: true,
+                  italic: false
                 }
               },
-        colors: ['#a52714', '#097138']
+        colors: ['green', '#097138']
       };
     
             var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
@@ -102,22 +108,22 @@
     
         </script>
     
-        <div id="chart_div"></div>
+        <div id="chart_div" ></div>
         
 
-        <p>Company: {{stock_name}}</p>
+        <p><b>Company:</b> {{stock_name}}</p>
         
         
         
-        <p><b>High:</b> ${{find_data.get("high")}}              <b></b>Open: ${{find_data.get("open")}}</p>
+        <p><b>High:</b> ${{find_data.get("high")}}</p>              <p><b>Open:</b> ${{find_data.get("open")}}</p>
 
-        <p><b>Low:</b> ${{find_data.get("low")}}                <b></b> ${{find_data.get("close")}}</p>
+        <p><b>Low:</b> ${{find_data.get("low")}}</p>                <p><b>Close:</b> ${{find_data.get("close")}}</p> 
 
       
         <h2>About {{stock_name}}</h2>
         <p>{{description[0]}}</p>
 
-
+      
 
 
         {%if not in_fav%}
@@ -138,6 +144,7 @@
         </script> 
         {%endif%}
 
+       
 
 
         {% if in_fav %}
@@ -156,6 +163,14 @@
           });
         });
         </script> 
+        {%endif%}
+
+
+        {%if refresh%}
+          <script>
+            window.location.reload();
+          </script>
+          refresh = False
         {%endif%}
 
     </div>
