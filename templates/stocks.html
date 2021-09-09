@@ -123,12 +123,24 @@
         <h2>About {{stock_name}}</h2>
         <p>{{description[0]}}</p>
 
-      
-
-
-        {%if not in_fav%}
-        <button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to favourites</button>
     
+
+
+        <div class="add">
+          <button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to favourites</button>
+       </div>
+      
+        <button id="remove_from_favourites" onclick="remove_from_favourites(stock_name)">Remove from favourites</button>
+
+
+       <script>
+        var button = document.getElementById('add_to_favourites');
+        button.addEventListener('click', function() {
+          document.getElementById("add_to_favourites").style.visibility = 'hidden';
+          document.getElementById("remove_from_favourites").style.visibility = 'visible';
+        }, false);
+      </script>
+
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script type=text/javascript>
             $(function() {
@@ -142,14 +154,18 @@
           });
         });
         </script> 
-        {%endif%}
+        
 
-       
+        
+        <script>
+          var button = document.getElementById('remove_from_favourites');
+          button.addEventListener('click', function() {
+            document.getElementById("remove_from_favourites").style.visibility = 'hidden';
+            document.getElementById("add_to_favourites").style.visibility = 'visible';
+          }, false);
+        </script>
 
 
-        {% if in_fav %}
-        <button id="remove_from_favourites" onclick="remove_from_favourites(stock_name)">Remove from favourites</button>
-    
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script type=text/javascript>
             $(function() {
@@ -163,6 +179,18 @@
           });
         });
         </script> 
+ 
+
+        <script>
+          document.getElementById("remove_from_favourites").style.visibility = 'hidden';
+          document.getElementById("add_to_favourites").style.visibility = 'visible';
+        </script>
+
+        {%if in_fav%}
+        <script>
+          document.getElementById("add_to_favourites").style.visibility = 'hidden';
+          document.getElementById("remove_from_favourites").style.visibility = 'visible';
+        </script>
         {%endif%}
 
 

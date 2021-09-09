@@ -21,6 +21,11 @@ main{
   margin-bottom: 2%;
 }
 
+.add{
+  position: absolute;
+}
+
+
 .user_input{
   margin: 20%;
   background-color: #f2f2f2;
