@@ -26,6 +26,7 @@ main{
 }
 
 
+
 .user_input{
   margin: 20%;
   background-color: #f2f2f2;
@@ -196,4 +197,46 @@ input[value="Logout"] {
   margin: 20px;
   color: black;
   background-color: grey ;
+}
+
+
+.login_box{
+  margin: 20%;
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 3%;
+  margin: auto;
+  width: fit-content;
+}
+
+.home{
+  margin: 20%;
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 3%;
+  margin: auto;
+  width: fit-content;
+}
+
+.favourites_page{
+  margin: 20%;
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 3%;
+  margin: auto;
+  width: 40%;
+
+}
+
+.register_form{
+  margin: 20%;
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 3%;
+  margin: auto;
+  width: fit-content;
 }

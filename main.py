@@ -7,7 +7,8 @@ import sqlite3
 from sqlite3 import Error
 import stock
 
-token =  "sk_bf573df0da8b4565b36735dda78f1755"
+test = "https://cloud.iexapis.com/stable/stock/aapl/chart/last-quarter?&token=pk_1649ada6b8c74aa1bd5761f73e9f6e58"
+token =  "pk_1649ada6b8c74aa1bd5761f73e9f6e58"
 
 print(stock.token)
 print(stock.test("yes"))
@@ -139,6 +140,11 @@ def login_check():
 #Profile page
 @app.route("/profile")
 def profile():
+  return render_template("profile.html")
+  
+
+@app.route("/favourites")
+def favourites():
   favourite_stocks = None
   logged_in = check_logged_in()
 
@@ -149,7 +155,7 @@ def profile():
   favourite_stocks = stocks.fetchall()
   connection.commit()
   print(favourite_stocks)
-  return render_template("profile.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
+  return render_template("favourites.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
 
 
 #Stock page and api
@@ -181,7 +187,7 @@ def stock_data():
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
     print(request.form)
-    stock_name.upper()
+    stock_name = stock_name.upper()
 
     print(stock_name, date)
 

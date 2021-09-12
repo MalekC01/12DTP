@@ -114,24 +114,27 @@
         <p><b>Company:</b> {{stock_name}}</p>
         
         
-        
-        <p><b>High:</b> ${{find_data.get("high")}}</p>              <p><b>Open:</b> ${{find_data.get("open")}}</p>
-
-        <p><b>Low:</b> ${{find_data.get("low")}}</p>                <p><b>Close:</b> ${{find_data.get("close")}}</p> 
-
+        <table>
+          <tr>
+            <td><b>High:</b> ${{find_data.get("high")}}</td>
+            <td><b>Open:</b> ${{find_data.get("open")}}</td>
+          </tr>
+          <tr>
+            <td><b>Low:</b> ${{find_data.get("low")}}</td>
+            <td><b>Close:</b> ${{find_data.get("close")}}</td>
+          </tr>
+          
+        </table>
       
         <h2>About {{stock_name}}</h2>
         <p>{{description[0]}}</p>
 
-    
-
-
         <div class="add">
           <button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to favourites</button>
-       </div>
+        </div>
       
+        
         <button id="remove_from_favourites" onclick="remove_from_favourites(stock_name)">Remove from favourites</button>
-
 
        <script>
         var button = document.getElementById('add_to_favourites');
