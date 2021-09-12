@@ -49,6 +49,9 @@ def sign_out():
   session.pop('email', None)
   return render_template('logout.html', logged_in = logged_in)
 
+@app.errorhandler(404)
+def page_404(e):
+  return render_template('page_404.html', logged_in = logged_in), 404
 
 #Home page
 @app.route('/')
@@ -140,7 +143,7 @@ def login_check():
 #Profile page
 @app.route("/profile")
 def profile():
-  return render_template("profile.html")
+  return render_template("profile.html",  logged_in = logged_in)
   
 
 @app.route("/favourites")
