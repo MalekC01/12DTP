@@ -16,6 +16,19 @@ app = Flask(__name__)
 
 logged_in = None
 
+def do_query(query, data = None, fetchall = False):
+  conn = sqlite3.connect("user_datebase.db")
+  cursor = conn.cursor()
+  if data is None:
+    cursor.execute(query)
+  else:
+    cursor.execute(query, data)
+  results = cursor.fetchall() if fetchall else cursor.fetchone()
+  conn.close()
+  return results
+
+
+
 #starts the session
 @app.route('/set/')
 def set():
@@ -38,10 +51,6 @@ def comparison_stock_exists():
     return True
   return False
 
-def compare_stocks():
-  print("Compare works")
-  compare = True
-  return render_template (compare = compare)
 
 #once session has started log out will end the session
 @app.route('/logout')
@@ -58,12 +67,6 @@ def page_404(e):
 def home():
   logged_in = check_logged_in()
   return render_template('home.html', logged_in = logged_in)
-
-@app.route('/test')
-def test():
-  logged_in = check_logged_in()
-  return render_template('test.html', logged_in = logged_in)
-
 
 
 #Register Page
@@ -82,6 +85,7 @@ def login():
 #Registers a user and sends information to the database
 @app.route('/register', methods=['POST'])
 def my_form():
+  register_user = None
   
   if request.method == "POST":
     name = request.form.get("Name")
@@ -89,8 +93,8 @@ def my_form():
     password = request.form.get("Password")
   connection = create_connection('user_database.db')
   try:
-    sql_query = '''INSERT INTO User (name, username_email, password) VALUES (?,?,?)'''
-    cur = connection.cursor()
+    sql_query = '''INSERT INTO User (name, username_email, password) VALUES ({name}, {email}, {password})'''
+    cur = connection.curosr()
     cur.execute(sql_query, (name, email, password))
     connection.commit()
   except:
@@ -229,7 +233,7 @@ def check_in_favourites():
   if stocks is not None and session['stock_name'] in stocks:
     return True
   return False
-
+#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
 
 def data_for_graph(stock_name):
   test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/last-quarter?&token={token}"
@@ -283,7 +287,7 @@ def remove_from_favoruites():
   finally:
     if connection:
       connection.close()
-  return redirect('/profile')
+  return redirect('/profile', logged_in = logged_in)
 
 
 
