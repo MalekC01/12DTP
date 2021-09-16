@@ -8,7 +8,7 @@ from sqlite3 import Error
 import stock
 
 test = "https://cloud.iexapis.com/stable/stock/aapl/chart/last-quarter?&token=pk_1649ada6b8c74aa1bd5761f73e9f6e58"
-token =  "pk_1649ada6b8c74aa1bd5761f73e9f6e58"
+token =  "sk_6d3688ec98d6451bb686b8ac277dce59"
 
 print(stock.token)
 print(stock.test("yes"))
@@ -16,13 +16,26 @@ app = Flask(__name__)
 
 logged_in = None
 
+
+
+#Connects website to the database
+def create_connection(db_file):
+  try:
+    conn = sqlite3.connect(db_file)
+    print(sqlite3.version)
+  except Error as e:
+    print(e)
+  return conn
+
+
 def do_query(query, data = None, fetchall = False):
-  conn = sqlite3.connect("user_datebase.db")
+  conn = create_connection("user_database.db")
   cursor = conn.cursor()
   if data is None:
     cursor.execute(query)
   else:
     cursor.execute(query, data)
+  conn.commit()
   results = cursor.fetchall() if fetchall else cursor.fetchone()
   conn.close()
   return results
@@ -91,28 +104,11 @@ def my_form():
     name = request.form.get("Name")
     email = request.form.get("Email")
     password = request.form.get("Password")
-  connection = create_connection('user_database.db')
-  try:
-    sql_query = '''INSERT INTO User (name, username_email, password) VALUES ({name}, {email}, {password})'''
-    cur = connection.curosr()
-    cur.execute(sql_query, (name, email, password))
-    connection.commit()
-  except:
-    print("Something went wrong saving your data. Please try agian.")
-
-  finally:
-    if connection:
-      connection.close()
+    sql_query = '''INSERT INTO User (name, username_email, password) VALUES (?, ?, ?)'''
+    do_query(sql_query,(name, email, password))
   return redirect('/')
 
-#Connects website to the database
-def create_connection(db_file):
-  try:
-    conn = sqlite3.connect(db_file)
-    print(sqlite3.version)
-  except Error as e:
-    print(e)
-  return conn
+
 
 #Checks users input for login matches the information in the database
 @app.route("/login", methods=['POST'])
@@ -120,28 +116,20 @@ def login_check():
   if request.method == "POST":
     password = request.form.get("password")
     email = request.form.get("email")
-    connection = create_connection('user_database.db')
-    cur = connection.cursor()
+ 
     
     login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
-    cur.execute(login_query, (email, password))
-    print((email, password))
-    if not cur.fetchone():
+    in_db = do_query(login_query, (email, password))
+    if not in_db:
       logged_in = False
-      print(logged_in)
       return render_template("/login.html", logged_in = logged_in)
     else:
       logged_in = True
-      print(logged_in)
       session['email'] = email
 
       find_id = '''SELECT id FROM User WHERE username_email = (?);'''
-      cur = connection.cursor()
-      c_uid = cur.execute(find_id, (session['email'],))
-      uid = c_uid.fetchone()
-      connection.commit()
+      uid = do_query(find_id, (session['email'],))
       session['uid'] = uid[0]
-      print(session['uid'])
       return render_template("/login.html", logged_in = logged_in)
 
 #Profile page
@@ -154,13 +142,8 @@ def profile():
 def favourites():
   favourite_stocks = None
   logged_in = check_logged_in()
-
-  connection = create_connection('user_database.db')
   sql_query = '''SELECT stock_name FROM Favourites WHERE uid = ?;'''
-  cur = connection.cursor()
-  stocks = cur.execute(sql_query, (session['uid'],))
-  favourite_stocks = stocks.fetchall()
-  connection.commit()
+  favourite_stocks = do_query(sql_query, (session['uid'],), True)
   print(favourite_stocks)
   return render_template("favourites.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
 
@@ -190,24 +173,16 @@ def stock_data():
   description = None
 
   if request.method == "POST":
-    print("POST called")
     stock_name = request.form.get("Stock_name")
     date = request.form.get("data_date")
-    print(request.form)
     stock_name = stock_name.upper()
 
-    print(stock_name, date)
-
     result = stock.stock_is_valid(stock_name)
-    print(result)
 
     date_valid, date_string = stock.is_date_valid(date)
-    print(date_valid)
-    print(date_string)
   
     if result == True and date_valid == True:
       find_data = stock.get_data(stock_name, date_string)
-      print("find data: " + str(find_data))
 
       session["stock_name"] = stock_name
       session["stock_1"] = find_data
@@ -222,13 +197,7 @@ def stock_data():
 
 def check_in_favourites():
   find_id = '''SELECT stock_name FROM Favourites WHERE uid = (?);'''
-  connection = create_connection('user_database.db')
-  cur = connection.cursor()
-  c_stocks = cur.execute(find_id, (session['uid'],))
-  stocks = c_stocks.fetchone()
-  connection.commit()  
-  
-  print(stocks)
+  stocks = do_query(find_id, (session['uid'],))
 
   if stocks is not None and session['stock_name'] in stocks:
     return True
@@ -236,8 +205,7 @@ def check_in_favourites():
 #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
 
 def data_for_graph(stock_name):
-  test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/last-quarter?&token={token}"
-  print("test" + test_stock)
+  #test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/last-quarter?&token={token}"
   date_close = []
   date_for_graph = []
 
@@ -254,12 +222,10 @@ def data_for_graph(stock_name):
 
   for i in range(60):
     data_for_graph.append([date_for_graph[i], date_close[i]])
-  print("data for the graph")
-  print(data_for_graph)
   return data_for_graph
 
 def get_description(stock_name):
-  description_url = f"https://cloud.iexapis.com/stable/stock/{stock_name}/company?&token={token}"
+  #description_url = f"https://cloud.iexapis.com/stable/stock/{stock_name}/company?&token={token}"
   decription = requests.get(description_url).json()
 
   decription_blurb = []
@@ -271,45 +237,20 @@ def get_description(stock_name):
 
 @app.route('/remove_from_favourites')
 def remove_from_favoruites():
-  
-  print(session['email'])
-  connection = create_connection('user_database.db')
-  print("remove from favourite is running.")
-  try:
-    remove_query = '''DELETE FROM Favourites WHERE uid = (?) AND stock_name = (?);'''
-    cur = connection.cursor()
-    remove_stock = cur.execute(remove_query, (session['uid'], session['stock_name']))
-    connection.commit() 
 
-  except:
-    print("Something went wrong removing from favourites. Please try agian.")
+  remove_query = '''DELETE FROM Favourites WHERE uid = (?) AND stock_name = (?);'''
+  remove_stock = do_query(remove_query, (session['uid'], session['stock_name']))
 
-  finally:
-    if connection:
-      connection.close()
   return redirect('/profile', logged_in = logged_in)
 
 
 
 @app.route('/add_to_favourites')
 def add_to_favourites():
-  print("Favourites Running")
-  connection = create_connection('user_database.db')
+
+  sql_query = '''INSERT INTO Favourites (uid, stock_name) VALUES (?, ?);'''
+  do_query(sql_query, (session['uid'], session["stock_name"]))
   
-  print(session['email'])
- 
-  try:
-    sql_query = '''INSERT INTO Favourites (uid, stock_name) VALUES (?, ?);'''
-    cur = connection.cursor()
-    cur.execute(sql_query, (session['uid'], session["stock_name"]))
-    connection.commit()
-
-  except:
-    print("Something went adding to favourites. Please try agian.")
-
-  finally:
-    if connection:
-      connection.close()
   return redirect('/')
 
 
