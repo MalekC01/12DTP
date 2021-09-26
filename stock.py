@@ -1,23 +1,21 @@
 import requests 
 import datetime
+import yfinance as yf
 
 token =  "sk_6d3688ec98d6451bb686b8ac277dce59"
 
 
 #Tests stock to make sure it is a valid stock in the api
 def stock_is_valid(stock):
+  print(stock)
+  ticker = yf.Ticker(stock)
+  data = ticker.info
   try:
-    #test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock}/company?&token={token}"
-    test_stock = '{"symbol":"AAPL","companyName":"Apple Inc","exchange":"NASDAQ","industry":"Electronic Computer Manufacturing ","website":"https://www.apple.com/","description":"Apple Inc. is an American multinational technology company headquartered in Cupertino, California, that designs, develops, and sells consumer electronics, computer software, and online services. It is considered one of the Big Five companies in the U.S. information technology industry, along with Amazon, Google, Microsoft, and Facebook. Its hardware products include the iPhone smartphone, the iPad tablet computer, the Mac personal computer, the iPod portable media player, the Apple Watch smartwatch, the Apple TV digital media player, the AirPods wireless earbuds, the AirPods Max headphones, and the HomePod smart speaker line. Apples software includes iOS, iPadOS, macOS, watchOS, and tvOS operating systems, the iTunes media player, the Safari web browser, the Shazam music identifier, and the iLife and iWork creativity and productivity suites, as well as professional applications like Final Cut Pro X, Logic Pro, and Xcode. Its online services include the iTunes Store, the iOS App Store, Mac App Store, Apple Arcade, Apple Music, Apple TV+, iMessage, and iCloud. Other services include Apple Store, Genius Bar, AppleCare, Apple Pay, Apple Pay Cash, and Apple Card. Apple was founded by Steve Jobs, Steve Wozniak, and Ronald Wayne in April 1976 to develop and sell Wozniaks Apple I personal computer, though Wayne sold his share back within 12 days. It was incorporated as Apple Computer, Inc., in January 1977, and sales of its computers, including the Apple I and Apple II, grew quickly.","CEO":"Timothy Cook","securityName":"Apple Inc","issueType":"cs","sector":"Manufacturing","primarySicCode":3571,"employees":147000,"tags":["Electronic Technology","Telecommunications Equipment","Manufacturing","Electronic Computer Manufacturing "],"address":"1 Apple Park Way","address2":null,"state":"California","city":"Cupertino","zip":"95014-0642","country":"United States","phone":"14089961010"}'
-    requests.get(test_stock).json()
+    pass
     return True
   except:
     print("\nThis stock doesnt exist try agian.\n")
     return False
-
-
-def test(id):
-  print(id + "hi")
 
 
 #Makes sure that that the market was open on that day
@@ -81,10 +79,11 @@ def clear_data():
 #takes the input from the stock name a date and gets the data from the api
 def get_data(stock_name, date_string):
 
-  api_url =  '{"symbol":"AAPL","companyName":"Apple Inc","exchange":"NASDAQ","industry":"Electronic Computer Manufacturing ","website":"https://www.apple.com/","description":"Apple Inc. is an American multinational technology company headquartered in Cupertino, California, that designs, develops, and sells consumer electronics, computer software, and online services. It is considered one of the Big Five companies in the U.S. information technology industry, along with Amazon, Google, Microsoft, and Facebook. Its hardware products include the iPhone smartphone, the iPad tablet computer, the Mac personal computer, the iPod portable media player, the Apple Watch smartwatch, the Apple TV digital media player, the AirPods wireless earbuds, the AirPods Max headphones, and the HomePod smart speaker line. Apples software includes iOS, iPadOS, macOS, watchOS, and tvOS operating systems, the iTunes media player, the Safari web browser, the Shazam music identifier, and the iLife and iWork creativity and productivity suites, as well as professional applications like Final Cut Pro X, Logic Pro, and Xcode. Its online services include the iTunes Store, the iOS App Store, Mac App Store, Apple Arcade, Apple Music, Apple TV+, iMessage, and iCloud. Other services include Apple Store, Genius Bar, AppleCare, Apple Pay, Apple Pay Cash, and Apple Card. Apple was founded by Steve Jobs, Steve Wozniak, and Ronald Wayne in April 1976 to develop and sell Wozniaks Apple I personal computer, though Wayne sold his share back within 12 days. It was incorporated as Apple Computer, Inc., in January 1977, and sales of its computers, including the Apple I and Apple II, grew quickly.","CEO":"Timothy Cook","securityName":"Apple Inc","issueType":"cs","sector":"Manufacturing","primarySicCode":3571,"employees":147000,"tags":["Electronic Technology","Telecommunications Equipment","Manufacturing","Electronic Computer Manufacturing "],"address":"1 Apple Park Way","address2":null,"state":"California","city":"Cupertino","zip":"95014-0642","country":"United States","phone":"14089961010"}'
+  ticker = yf.Ticker(stock_name)
+  data = ticker.info
 
-  data = requests.get(api_url).json()[0]
-  
+  print("Stock name: " + stock_name)
+
   data_date = []
   date_high = []
   date_low = []
@@ -92,18 +91,21 @@ def get_data(stock_name, date_string):
   date_close = []
 
 
-  data_date.append(data['date'])
-  date_high.append(data['high'])
-  date_low.append(data['low'])
-  date_open.append(data['open'])
-  date_close.append(data['close'])
+  """data_date.append(data['date']) "date": data_date[0],"""
+  date_high.append(data['regularMarketDayHigh'])
+  date_low.append(data['regularMarketDayLow'])
+  date_open.append(data['regularMarketOpen'])
+  date_close.append(data['previousClose'])
 
-  raw_data = {"date": data_date[0],
+  raw_data = {
               "high": date_high[0],
               "low": date_low[0],
               "open": date_open[0], 
               "close": date_close[0]}
   
+  
+  print("Data dict: ")
+  print(raw_data)
 
   return raw_data
 

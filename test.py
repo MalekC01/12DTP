@@ -1,10 +1,12 @@
 import yfinance as yf
+import pandas as pd
 
 msft = yf.Ticker("MSFT")
 
-desc =[]
+hist = msft.history(period="max")
 
-data = msft.info
+print(hist)
 
-desc.append(data['longBusinessSummary'])
-print(desc)
+thing = hist['Close'].to_csv()
+
+print(thing)

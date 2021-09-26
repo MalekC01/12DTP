@@ -7,11 +7,10 @@ import sqlite3
 from sqlite3 import Error
 import stock
 
+
 test = "https://cloud.iexapis.com/stable/stock/aapl/chart/last-quarter?&token=pk_1649ada6b8c74aa1bd5761f73e9f6e58"
 token =  "sk_6d3688ec98d6451bb686b8ac277dce59"
 
-print(stock.token)
-print(stock.test("yes"))
 app = Flask(__name__)
 
 logged_in = None
@@ -205,33 +204,37 @@ def check_in_favourites():
 #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
 
 def data_for_graph(stock_name):
-  #test_stock =  f"https://cloud.iexapis.com/stable/stock/{stock_name}/chart/last-quarter?&token={token}"
+  
+  
+  """test_stock =  
   date_close = []
   date_for_graph = []
 
-  result = requests.get(test_stock).json()
+  result = stock_name.info
   for result in result:
-    date_close.append(result['close'])
+    date_close.append(result['previousClose'])
 
-  find_date = requests.get(test_stock).json()
+  result = stock_name.info
   for find_date in find_date:
     date_for_graph.append(find_date['date']) 
-  print(date_close)
 
-  data_for_graph = [['Date', 'Price']]
 
-  for i in range(60):
-    data_for_graph.append([date_for_graph[i], date_close[i]])
+  data_for_graph = [['Date', 'Price']]"""
+
+  """for i in range(60):
+    data_for_graph.append([date_for_graph[i], date_close[i]])"""
+
+  data_for_graph = stock_name.history(period="max")
+
   return data_for_graph
 
 def get_description(stock_name):
-  #description_url = f"https://cloud.iexapis.com/stable/stock/{stock_name}/company?&token={token}"
-  decription = requests.get(description_url).json()
-
+  
   decription_blurb = []
-  decription_blurb.append(decription['description'])
-  print(decription_blurb)
+  blurb = stock_name.info
+  decription = description_blurb.append(data['longBusinessSummary'])
 
+  print(description_blurb)
   return decription_blurb
   
 
