@@ -6,6 +6,8 @@ from datetime import datetime
 import sqlite3 
 from sqlite3 import Error
 import stock
+import yfinance as yf
+import pandas as pd
 
 
 test = "https://cloud.iexapis.com/stable/stock/aapl/chart/last-quarter?&token=pk_1649ada6b8c74aa1bd5761f73e9f6e58"
@@ -204,38 +206,36 @@ def check_in_favourites():
 #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
 
 def data_for_graph(stock_name):
-  
-  
-  """test_stock =  
-  date_close = []
-  date_for_graph = []
+    
+  ticker = yf.Ticker(stock_name)
+  hist = ticker.history(period="max")
 
-  result = stock_name.info
-  for result in result:
-    date_close.append(result['previousClose'])
+  data = hist['Close'].to_csv()
+  data_list = data.split()
 
-  result = stock_name.info
-  for find_date in find_date:
-    date_for_graph.append(find_date['date']) 
+  date_list = []
+  value_list = []
 
+  for item in data_list[1:]:
+      items = item.split(',')
+      date_list.append(items[0])
+      value_list.append(float(items[1]))
 
-  data_for_graph = [['Date', 'Price']]"""
+  data_for_graph = [['Date', 'Price']]
 
-  """for i in range(60):
-    data_for_graph.append([date_for_graph[i], date_close[i]])"""
-
-  data_for_graph = stock_name.history(period="max")
+  for i in range(len(date_list)):
+      data_for_graph.append([date_list[i], value_list[i]])
 
   return data_for_graph
 
 def get_description(stock_name):
-  
-  decription_blurb = []
-  blurb = stock_name.info
-  decription = description_blurb.append(data['longBusinessSummary'])
 
-  print(description_blurb)
-  return decription_blurb
+  ticker = yf.Ticker(stock_name)
+  description_blurb = []
+  blurb = ticker.info
+  description = description_blurb.append(blurb['longBusinessSummary'])
+
+  return description_blurb
   
 
 @app.route('/remove_from_favourites')

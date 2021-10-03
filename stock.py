@@ -56,7 +56,7 @@ def is_date_valid(date):
   if day_name == "Saturday" or day_name == "Sunday":
     return False, 'Market is not open in the weekend.'
 
-  info_of_date = year + month + day
+  info_of_date = year + '-' + month + '-' + day
 
   return True, info_of_date
 
@@ -80,28 +80,14 @@ def clear_data():
 def get_data(stock_name, date_string):
 
   ticker = yf.Ticker(stock_name)
-  data = ticker.info
+  data = ticker.history(start=date_string)
 
-  print("Stock name: " + stock_name)
-
-  data_date = []
-  date_high = []
-  date_low = []
-  date_open = []
-  date_close = []
-
-
-  """data_date.append(data['date']) "date": data_date[0],"""
-  date_high.append(data['regularMarketDayHigh'])
-  date_low.append(data['regularMarketDayLow'])
-  date_open.append(data['regularMarketOpen'])
-  date_close.append(data['previousClose'])
 
   raw_data = {
-              "high": date_high[0],
-              "low": date_low[0],
-              "open": date_open[0], 
-              "close": date_close[0]}
+              "high": data['High'][1],
+              "low": data['Low'][1],
+              "open": data['Open'][1], 
+              "close": data['Close'][1]}
   
   
   print("Data dict: ")

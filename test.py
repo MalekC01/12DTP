@@ -3,10 +3,10 @@ import pandas as pd
 
 msft = yf.Ticker("MSFT")
 
-hist = msft.history(period="max")
+date = "2021-06-30"
 
-print(hist)
+data = msft.history(start=date)
 
-thing = hist['Close'].to_csv()
+print(data)
+print(data['Open'][1])
 
-print(thing)
