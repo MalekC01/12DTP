@@ -65,7 +65,6 @@ def comparison_stock_exists():
     return True
   return False
 
-
 #once session has started log out will end the session
 @app.route('/logout')
 def sign_out():
@@ -82,7 +81,6 @@ def home():
   logged_in = check_logged_in()
   return render_template('home.html', logged_in = logged_in)
 
-
 #Register Page
 @app.route("/register")
 def register():
@@ -92,8 +90,12 @@ def register():
 #Login page
 @app.route("/login")
 def login():
- return render_template("/login.html", logged_in = logged_in)
+ return render_template("login.html", logged_in = logged_in)
 
+#Profile page
+@app.route("/profile")
+def profile():
+  return render_template("profile.html",  logged_in = logged_in)
 
 
 #Registers a user and sends information to the database
@@ -133,10 +135,7 @@ def login_check():
       session['uid'] = uid[0]
       return render_template("/login.html", logged_in = logged_in)
 
-#Profile page
-@app.route("/profile")
-def profile():
-  return render_template("profile.html",  logged_in = logged_in)
+
   
 
 @app.route("/favourites")
