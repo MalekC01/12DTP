@@ -69,6 +69,7 @@ main{
   border-radius: 5px;
   align-self: center;
   position: absolute;
+  width: auto;
 }
 
 .display_data button:hover{
