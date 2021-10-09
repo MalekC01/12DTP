@@ -9,13 +9,13 @@ token =  "sk_6d3688ec98d6451bb686b8ac277dce59"
 def stock_is_valid(stock):
   print(stock)
   ticker = yf.Ticker(stock)
-  data = ticker.info
   try:
-    pass
+    some_data = ticker.splits[0]
     return True
-  except:
-    print("\nThis stock doesnt exist try agian.\n")
+  except IndexError:
+    print("Not a valid stock ticker.")
     return False
+
 
 
 #Makes sure that that the market was open on that day
@@ -80,14 +80,15 @@ def clear_data():
 def get_data(stock_name, date_string):
 
   ticker = yf.Ticker(stock_name)
+  print("data")
   data = ticker.history(start=date_string)
 
 
   raw_data = {
-              "high": data['High'][1],
-              "low": data['Low'][1],
-              "open": data['Open'][1], 
-              "close": data['Close'][1]}
+              "high": round(data['High'][1], 2),
+              "low": round(data['Low'][1], 2),
+              "open": round(data['Open'][1], 2), 
+              "close": round(data['Close'][1], 2)}
   
   
   print("Data dict: ")

@@ -6,7 +6,7 @@
 
     <h2>See Historical Data About A Stock.</h2>
     <form name="find_data" method="POST">
-        {% if result == False%}
+        {% if not stock_valid%}
         <br>
         <div class="stock_not_valid">
             <p>Stock doesn't exist or ticker is incorrect. <br>Please try again</p>
@@ -45,10 +45,33 @@
     <br>
     <br>
 
+    
 
 
-    {% if date_valid == True%}
+
+    
+    {% if date_valid and stock_valid%}
     <div class="display_data">
+
+
+    <p><b>Company:</b> {{stock_name}}</p>
+        
+        
+    <table>
+      <tr>
+        <td><b>High:</b> ${{find_data.get("high")}}</td>
+        <td><b>Open:</b> ${{find_data.get("open")}}</td>
+      </tr>
+      <tr>
+        <td><b>Low:</b> ${{find_data.get("low")}}</td>
+        <td><b>Close:</b> ${{find_data.get("close")}}</td>
+      </tr>
+      
+    </table>
+
+
+
+    
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
       <script>
@@ -109,32 +132,18 @@
         </script>
     
         <div id="chart_div" ></div>
-        
-
-        <p><b>Company:</b> {{stock_name}}</p>
-        
-        
-        <table>
-          <tr>
-            <td><b>High:</b> ${{find_data.get("high")}}</td>
-            <td><b>Open:</b> ${{find_data.get("open")}}</td>
-          </tr>
-          <tr>
-            <td><b>Low:</b> ${{find_data.get("low")}}</td>
-            <td><b>Close:</b> ${{find_data.get("close")}}</td>
-          </tr>
-          
-        </table>
+      
       
         <h2>About {{stock_name}}</h2>
         <p>{{description[0]}}</p>
 
         <button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to favourites</button>
         
-        <button id="remove_from_favourites" onclick="remove_from_favourites(stock_name)">Remove from favourites</button>
+        <!--> <button id="remove_from_favourites" onclick="remove_from_favourites(stock_name)">Remove from favourites</button> </!-->
 
        <script>
         var button = document.getElementById('add_to_favourites');
+
         button.addEventListener('click', function() {
           document.getElementById("add_to_favourites").style.visibility = 'hidden';
           document.getElementById("remove_from_favourites").style.visibility = 'visible';

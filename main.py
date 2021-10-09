@@ -136,6 +136,7 @@ def login_check():
 #Profile page
 @app.route("/profile")
 def profile():
+  logged_in = check_logged_in()
   return render_template("profile.html",  logged_in = logged_in)
   
 
@@ -165,7 +166,7 @@ def stock_data():
 
   stock_exists = comparison_stock_exists()
 
-  result = None
+  stock_valid = True
   date_valid = None
   find_data = None
   stock_name = None
@@ -178,11 +179,11 @@ def stock_data():
     date = request.form.get("data_date")
     stock_name = stock_name.upper()
 
-    result = stock.stock_is_valid(stock_name)
+    stock_valid = stock.stock_is_valid(stock_name)
 
     date_valid, date_string = stock.is_date_valid(date)
   
-    if result == True and date_valid == True:
+    if  stock_valid and date_valid:
       find_data = stock.get_data(stock_name, date_string)
 
       session["stock_name"] = stock_name
@@ -193,7 +194,7 @@ def stock_data():
       info_for_graph = data_for_graph(stock_name)
       description = get_description(stock_name)
 
-  return render_template("stocks.html", description = description, info_for_graph = info_for_graph, in_fav = in_fav, result = result, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
+  return render_template("stocks.html", description = description, info_for_graph = info_for_graph, in_fav = in_fav, stock_valid = stock_valid, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
 
 
 def check_in_favourites():
@@ -208,6 +209,7 @@ def check_in_favourites():
 def data_for_graph(stock_name):
     
   ticker = yf.Ticker(stock_name)
+  print("data for graph")
   hist = ticker.history(period="max")
 
   data = hist['Close'].to_csv()
@@ -231,12 +233,20 @@ def data_for_graph(stock_name):
 def get_description(stock_name):
 
   ticker = yf.Ticker(stock_name)
+  print("description")
   description_blurb = []
   blurb = ticker.info
   description = description_blurb.append(blurb['longBusinessSummary'])
 
   return description_blurb
   
+
+@app.route('/favourite_toggle')
+def favourite_toggle():
+
+  
+  
+  return redirect('/')
 
 @app.route('/remove_from_favourites')
 def remove_from_favoruites():
