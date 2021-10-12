@@ -4,7 +4,7 @@
 
     <div class="user_input">
 
-    <h2>See Historical Data About A Stock.</h2>
+    <h2>See Historical Data About A Stock. <img src="/static/images/info.png" title="A ticker is the obrevation of a stock name e.g. Apples stock ticker is AAPLF"></h2>
     <form name="find_data" method="POST">
         {% if not stock_valid%}
         <br>
@@ -16,9 +16,10 @@
         {%endif%}
     
        
-        <label>Search a stock (Use the stocks Ticker):</label>
+        <label>Search a stock (Use the stocks Ticker): </label>
+        
         <br>
-        <input type="Name" name="Stock_name" placeholder="Ticker">
+        <input type="Name" name="Stock_name" placeholder="Ticker"> 
         <br>
 
         {% if date_valid == False %}
@@ -54,7 +55,7 @@
     <div class="display_data">
 
 
-    <p><b>Company:</b> {{stock_name}}</p>
+    <h2><b>Company:</b> {{stock_name}}</h2>
         
         
     <table>
@@ -69,8 +70,8 @@
       
     </table>
 
-
-
+    <br>
+    <br>
     
       <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
@@ -202,13 +203,8 @@
         </script>
         {%endif%}
 
-
-        {%if refresh%}
-          <script>
-            window.location.reload();
-          </script>
-          refresh = False
-        {%endif%}
+        <br>
+        <br>
 
     </div>
 

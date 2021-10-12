@@ -92,10 +92,6 @@ def register():
 def login():
  return render_template("login.html", logged_in = logged_in)
 
-#Profile page
-@app.route("/profile")
-def profile():
-  return render_template("profile.html",  logged_in = logged_in)
 
 
 #Registers a user and sends information to the database
@@ -135,16 +131,6 @@ def login_check():
       session['uid'] = uid[0]
       return render_template("/login.html", logged_in = logged_in)
 
-<<<<<<< HEAD
-#Profile page
-@app.route("/profile")
-def profile():
-  logged_in = check_logged_in()
-  return render_template("profile.html",  logged_in = logged_in)
-=======
-
->>>>>>> 06b60b2825e65a809610b017199bbb95789a9e4c
-  
 
 @app.route("/favourites")
 def favourites():
