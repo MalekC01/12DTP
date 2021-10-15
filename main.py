@@ -9,14 +9,9 @@ import stock
 import yfinance as yf
 import pandas as pd
 
-
-test = "https://cloud.iexapis.com/stable/stock/aapl/chart/last-quarter?&token=pk_1649ada6b8c74aa1bd5761f73e9f6e58"
-token =  "sk_6d3688ec98d6451bb686b8ac277dce59"
-
 app = Flask(__name__)
 
 logged_in = None
-
 
 
 #Connects website to the database
@@ -73,6 +68,7 @@ def sign_out():
 
 @app.errorhandler(404)
 def page_404(e):
+  logged_in = check_logged_in()
   return render_template('page_404.html', logged_in = logged_in), 404
 
 #Home page
@@ -138,6 +134,7 @@ def favourites():
   logged_in = check_logged_in()
   sql_query = '''SELECT stock_name FROM Favourites WHERE uid = ?;'''
   favourite_stocks = do_query(sql_query, (session['uid'],), True)
+  print("Favourites: ")
   print(favourite_stocks)
   return render_template("favourites.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
 
@@ -181,8 +178,9 @@ def stock_data():
       session["stock_name"] = stock_name
       session["stock_1"] = find_data
       stock_exists = comparison_stock_exists()
-
+      
       in_fav = check_in_favourites()
+      print("In fav: " + str(in_fav))
       info_for_graph = data_for_graph(stock_name)
       description = get_description(stock_name)
 
@@ -191,17 +189,26 @@ def stock_data():
 
 def check_in_favourites():
   find_id = '''SELECT stock_name FROM Favourites WHERE uid = (?);'''
-  stocks = do_query(find_id, (session['uid'],))
+  stocks = do_query(find_id, (session['uid'],), True)
+  print("stocks" + str(stocks))
+  print("session: " + session['stock_name'])
 
-  if stocks is not None and session['stock_name'] in stocks:
+  stock_list = []
+
+  for item in stocks:
+    stock_list.append(item[0])
+
+  if stock_list is not None and session['stock_name'] in stock_list:
     return True
-  return False
-#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
+  else:
+    return False
 
+
+
+#searches for the historic data to add to the graph
 def data_for_graph(stock_name):
     
   ticker = yf.Ticker(stock_name)
-  print("data for graph")
   hist = ticker.history(period="max")
 
   data = hist['Close'].to_csv()
@@ -225,7 +232,6 @@ def data_for_graph(stock_name):
 def get_description(stock_name):
 
   ticker = yf.Ticker(stock_name)
-  print("description")
   description_blurb = []
   blurb = ticker.info
   description = description_blurb.append(blurb['longBusinessSummary'])
@@ -233,12 +239,6 @@ def get_description(stock_name):
   return description_blurb
   
 
-@app.route('/favourite_toggle')
-def favourite_toggle():
-
-  
-  
-  return redirect('/')
 
 @app.route('/remove_from_favourites')
 def remove_from_favoruites():
@@ -255,8 +255,10 @@ def add_to_favourites():
 
   sql_query = '''INSERT INTO Favourites (uid, stock_name) VALUES (?, ?);'''
   do_query(sql_query, (session['uid'], session["stock_name"]))
+  in_fav = check_in_favourites()
+  print("in_fav: " + str(in_fav))
   
-  return redirect('/')
+  return redirect('/', in_fav = in_fav)
 
 
 

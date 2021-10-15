@@ -264,3 +264,8 @@ input[value="Logout"] {
   height: auto;
 
 }
+
+
+a{
+  text-decoration: none;
+}

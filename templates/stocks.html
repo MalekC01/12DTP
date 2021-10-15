@@ -1,214 +1,201 @@
-{% extends 'layout.html' %}
-{% block content %}
+<!DOCTYPE html>
+
+<html>
+<head>
+	<title>
+	</title>
+</head>
+
+<body>
+	{% extends 'layout.html' %} {% block content %}
+
+	<div class="user_input">
+		<h2>See Historical Data About A Stock. <img src="/static/images/info.png"
+		title=
+		"A ticker is the obrevation of a stock name e.g. Apples stock ticker is AAPLF">
+		</h2>
 
 
-    <div class="user_input">
-
-    <h2>See Historical Data About A Stock. <img src="/static/images/info.png" title="A ticker is the obrevation of a stock name e.g. Apples stock ticker is AAPLF"></h2>
-    <form name="find_data" method="POST">
-        {% if not stock_valid%}
-        <br>
-        <div class="stock_not_valid">
-            <p>Stock doesn't exist or ticker is incorrect. <br>Please try again</p>
-        </div>
-        <br>
-        <br>
-        {%endif%}
-    
-       
-        <label>Search a stock (Use the stocks Ticker): </label>
-        
-        <br>
-        <input type="Name" name="Stock_name" placeholder="Ticker"> 
-        <br>
-
-        {% if date_valid == False %}
-        <div class="date_not_valid">
-            <p>Date is not valid.</p>    
-        </div>
-        {%endif%}
-
-        <br>
-        <label>What day would you like to see the data about?</label>
-        <br>
-        <input type="datetime" name="data_date" placeholder="DD/MM/YYYY">
-
-        <br>
-        <br>
-
-        <input type="submit" value="Search Stock">
-        <br>
-        <br>
-
-    </form>
-    </div>
-
-    <br>
-    <br>
-
-    
+		<form id="find_data" method="post" name="find_data">
+			{% if not stock_valid%}<br>
 
 
+			<div class="stock_not_valid">
+				<p>Stock doesn't exist or ticker is incorrect.<br>
+				Please try again</p>
+			</div>
+			<br>
+			<br>
+			{%endif%} <label>Search a stock (Use the stocks Ticker):</label><br>
+			<input name="Stock_name" placeholder="Ticker" type="name"><br>
+			{% if date_valid == False %}
 
-    
-    {% if date_valid and stock_valid%}
-    <div class="display_data">
+			<div class="date_not_valid">
+				<p>Date is not valid.</p>
+			</div>
+			{%endif%}<br>
+			<label>What day would you like to see the data about?</label><br>
+			<input name="data_date" placeholder="DD/MM/YYYY" type="datetime"><br>
+			<br>
+			<input type="submit" value="Search Stock"><br>
+			<br>
+		</form>
+	</div>
+	<br>
+	<br>
+	{% if date_valid and stock_valid%}
 
-
-    <h2><b>Company:</b> {{stock_name}}</h2>
-        
-        
-    <table>
-      <tr>
-        <td><b>High:</b> ${{find_data.get("high")}}</td>
-        <td><b>Open:</b> ${{find_data.get("open")}}</td>
-      </tr>
-      <tr>
-        <td><b>Low:</b> ${{find_data.get("low")}}</td>
-        <td><b>Close:</b> ${{find_data.get("close")}}</td>
-      </tr>
-      
-    </table>
-
-    <br>
-    <br>
-    
-      <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-
-      <script>
-          google.charts.load('current', {
-            packages: ['corechart', 'line']
-            });
-            google.charts.setOnLoadCallback(drawBasic);
-    
-            function drawBasic() {
-            
-            var data = google.visualization.arrayToDataTable({{info_for_graph|tojson}});
-          
+	<div class="display_data">
+		<h2><b>Company:</b> {{stock_name}}</h2>
 
 
-            var options = {
-              width: '10%',
-              height: '50%',
-              border: 2,
-              hAxis: {
-               title: 'Date',
-                 textStyle: {
-                  color: 'black',
-                  fontSize: 15,
-                  fontName: 'Arial',
-                  bold: true,
-                  italic: false
-                },
-                titleTextStyle: {
-                  color: 'black',
-                  fontSize: 17,
-                  fontName: 'Arial',
-                  bold: true,
-                  italic: false
-                }
-              },
-              vAxis: {
-                title: 'Price  ($USD)',
-                textStyle: {
-                  color: 'black',
-                  fontSize: 15,
-                  bold: true
-                },
-                titleTextStyle: {
-                  color: 'black',
-                  fontSize: 17,
-                  bold: true,
-                  italic: false
-                }
-              },
-        colors: ['green', '#097138']
-      };
-    
-            var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-    
-            chart.draw(data, options);
-            }
-    
-        </script>
-    
-        <div id="chart_div" ></div>
-      
-      
-        <h2>About {{stock_name}}</h2>
-        <p>{{description[0]}}</p>
+		<table>
+			<tr>
+				<td><b>High:</b> ${{find_data.get("high")}}</td>
 
-        <button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to favourites</button>
-        
-        <!--> <button id="remove_from_favourites" onclick="remove_from_favourites(stock_name)">Remove from favourites</button> </!-->
+				<td><b>Open:</b> ${{find_data.get("open")}}</td>
+			</tr>
 
-       <script>
-        var button = document.getElementById('add_to_favourites');
 
-        button.addEventListener('click', function() {
-          document.getElementById("add_to_favourites").style.visibility = 'hidden';
-          document.getElementById("remove_from_favourites").style.visibility = 'visible';
-        }, false);
-      </script>
+			<tr>
+				<td><b>Low:</b> ${{find_data.get("low")}}</td>
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script type=text/javascript>
-            $(function() {
-            $('#add_to_favourites').on('click', function(e) {
-            e.preventDefault()
-            $.getJSON('/add_to_favourites',
-                function(data) {
-              //do nothing
-            });
-            return false;
-          });
-        });
-        </script> 
-        
+				<td><b>Close:</b> ${{find_data.get("close")}}</td>
+			</tr>
+		</table>
+		<br>
+		<br>
+		<script src="https://www.gstatic.com/charts/loader.js" type=
+		"text/javascript">
+		</script> 
+		<script>
+		        google.charts.load('current', {
+		          packages: ['corechart', 'line']
+		          });
+		          google.charts.setOnLoadCallback(drawBasic);
+		  
+		          function drawBasic() {
+		          
+		          var data = google.visualization.arrayToDataTable({{info_for_graph|tojson}});
+		        
 
-        
-        <script>
-          var button = document.getElementById('remove_from_favourites');
-          button.addEventListener('click', function() {
+
+		          var options = {
+		            width: '10%',
+		            height: '50%',
+		            border: 2,
+		            hAxis: {
+		             title: 'Date',
+		               textStyle: {
+		                color: 'black',
+		                fontSize: 15,
+		                fontName: 'Arial',
+		                bold: true,
+		                italic: false
+		              },
+		              titleTextStyle: {
+		                color: 'black',
+		                fontSize: 17,
+		                fontName: 'Arial',
+		                bold: true,
+		                italic: false
+		              }
+		            },
+		            vAxis: {
+		              title: 'Price  ($USD)',
+		              textStyle: {
+		                color: 'black',
+		                fontSize: 15,
+		                bold: true
+		              },
+		              titleTextStyle: {
+		                color: 'black',
+		                fontSize: 17,
+		                bold: true,
+		                italic: false
+		              }
+		            },
+		      colors: ['green', '#097138']
+		    };
+		  
+		          var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+		  
+		          chart.draw(data, options);
+		          }
+		  
+		</script>
+
+		<div id="chart_div">
+		</div>
+
+
+		<h2>About {{stock_name}}</h2>
+
+
+		<p>{{description[0]}}</p>
+		<button id="add_to_favourites" onclick="add_to_favourites(stock_name)">Add to
+		favourites</button> 
+		<!--> <button id="remove_from_favourites" onclick="remove_from_favourites(stock_name)">Remove from favourites</button> </!-->
+		 
+		<script>
+		      var button = document.getElementById('add_to_favourites');
+
+		      button.addEventListener('click', function() {
+		        document.getElementById("add_to_favourites").style.visibility = 'hidden';
+		        document.getElementById("remove_from_favourites").style.visibility = 'visible';
+		      }, false);
+		</script> 
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+		</script> 
+		<script type="text/javascript">
+		          $(function() {
+		          $('#add_to_favourites').on('click', function(e) {
+		          e.preventDefault()
+		          $.getJSON('/add_to_favourites',
+		              function(data) {
+		            //do nothing
+		          });
+		          return false;
+		        });
+		      });
+		</script> 
+		<script>
+		        var button = document.getElementById('remove_from_favourites');
+		        button.addEventListener('click', function() {
+		          document.getElementById("remove_from_favourites").style.visibility = 'hidden';
+		          document.getElementById("add_to_favourites").style.visibility = 'visible';
+		        }, false);
+		</script> 
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js">
+		</script> 
+		<script type="text/javascript">
+		          $(function() {
+		          $('#remove_from_favourites').on('click', function(e) {
+		          e.preventDefault()
+		          $.getJSON('/remove_from_favourites',
+		              function(data) {
+		            //do nothing
+		          });
+		          return false;
+		        });
+		      });
+    </script> 
+    {%if in_fav%} 
+		<script>
+		        document.getElementById("remove_from_favourites").style.visibility = 'visible';
+            document.getElementById("add_to_favourites").style.visibility = 'hidden';
+    </script> 
+    {%endif%}
+
+    {%if in_fav != True%} 
+		<script>
+		        document.getElementById("add_to_favourites").style.visibility = 'visible';
             document.getElementById("remove_from_favourites").style.visibility = 'hidden';
-            document.getElementById("add_to_favourites").style.visibility = 'visible';
-          }, false);
-        </script>
-
-
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-        <script type=text/javascript>
-            $(function() {
-            $('#remove_from_favourites').on('click', function(e) {
-            e.preventDefault()
-            $.getJSON('/remove_from_favourites',
-                function(data) {
-              //do nothing
-            });
-            return false;
-          });
-        });
-        </script> 
- 
-
-        <script>
-          document.getElementById("remove_from_favourites").style.visibility = 'hidden';
-          document.getElementById("add_to_favourites").style.visibility = 'visible';
-        </script>
-
-        {%if in_fav%}
-        <script>
-          document.getElementById("add_to_favourites").style.visibility = 'hidden';
-          document.getElementById("remove_from_favourites").style.visibility = 'visible';
-        </script>
-        {%endif%}
-
-        <br>
-        <br>
-
-    </div>
-
-
-      {%endif%}
-
-{% endblock %}
+    </script> 
+    {%endif%}
+    <br>
+		<br>
+	</div>
+	{%endif%} {% endblock %}
+</body>
+</html>
