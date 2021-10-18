@@ -111,7 +111,6 @@ def login_check():
   if request.method == "POST":
     password = request.form.get("password")
     email = request.form.get("email")
- 
     
     login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
     in_db = do_query(login_query, (email, password))

@@ -14,7 +14,6 @@ body {
 }
 
 /* Css for stock page */
-
 main{
   padding: 3%;
   margin: auto;
@@ -22,12 +21,9 @@ main{
   margin-bottom: 2%;
 }
 
-.add{
-  position: absolute;
-}
 
 
-
+/* form inout boxes siziing and formatting*/
 .user_input{
   margin: 20%;
   background-color: #f2f2f2;
@@ -37,6 +33,7 @@ main{
   margin: auto;
   width: 40%;
 }
+
 
 .display_data{
   margin: 20%;
@@ -58,8 +55,6 @@ main{
   width: 100%;
 }
 
-
-
 .display_data button{
   background-color: #0066ff;
   border: none;
@@ -77,6 +72,13 @@ main{
   background-color: #0047b3;
 }
 
+img {
+  border: solid 1px transparent;
+}
+img:hover {
+  border-color: black;
+}
+
 .compare button{
   background-color: #0066ff;
   border: none;
@@ -91,17 +93,9 @@ main{
   background-color: #0047b3;
 }
 
-.date_not_valid {
-  background-color: #ef4943;
-  border: 2px solid red;
-  border-radius: 5px;
-  padding: 5px;
-}
+
 
 /* Error messages */
-
-
-
 .stock_not_valid {
   background-color: #ef4943;
   border: 2px solid red;
@@ -115,6 +109,15 @@ main{
   border-radius: 5px;
   padding: 5px;
 }
+
+/* error message for when stock date inputted in the stock page is not a valid date */
+.date_not_valid {
+  background-color: #ef4943;
+  border: 2px solid red;
+  border-radius: 5px;
+  padding: 5px;
+}
+
 
 .Login_correct {
   background-color: #17d42d;
@@ -158,6 +161,8 @@ input[type="date"]{
 input[value="Logout"] {
   border-radius: 0px;
 }
+
+
 /* All CSS for navigation bar*/
 
 .topnav {
@@ -176,6 +181,7 @@ input[value="Logout"] {
 
 .topnav a:hover {
   background-color: #0047b3;
+  text-decoration: none;
 }
 
 .topnav-right {
@@ -185,9 +191,6 @@ input[value="Logout"] {
 .Stock_Info {
   margin: 100px;
 }
-
-
-
 
 
 /* Fonts and sizing */
@@ -215,6 +218,28 @@ input[value="Logout"] {
   background-color: grey ;
 }
 
+.error_page {
+  margin: 20%;
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 3%;
+  margin: auto;
+  width: fit-content;
+}
+
+.error_page a{
+  background-color: #0066ff;
+  border: none;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  width: 100px;
+  border-radius: 5px;
+  align-self: center;
+  position: absolute;
+  width: auto;
+}
 
 .login_box{
   margin: 20%;
@@ -268,4 +293,23 @@ input[value="Logout"] {
 
 a{
   text-decoration: none;
+  color: inherit;
+}
+
+a:hover{
+  text-decoration: underline 3px #0066ff;
+}
+
+p{
+  font-size: 18px;
+}
+
+.logout_page{
+  margin: 20%;
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 3%;
+  margin: auto;
+  width: fit-content;
 }

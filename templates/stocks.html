@@ -12,24 +12,21 @@
 	<div class="user_input">
 		<h2>See Historical Data About A Stock. <img src="/static/images/info.png"
 		title=
-		"A ticker is the obrevation of a stock name e.g. Apples stock ticker is AAPLF">
+		"A ticker is the obrevation of a stock name e.g. Apple's stock ticker is AAPL">
 		</h2>
 
 
 		<form id="find_data" method="post" name="find_data">
+
 			{% if not stock_valid%}<br>
-
-
 			<div class="stock_not_valid">
-				<p>Stock doesn't exist or ticker is incorrect.<br>
-				Please try again</p>
+				<p>Stock doesn't exist or ticker is incorrect. Please try again</p>
 			</div>
-			<br>
 			<br>
 			{%endif%} <label>Search a stock (Use the stocks Ticker):</label><br>
 			<input name="Stock_name" placeholder="Ticker" type="name"><br>
 			{% if date_valid == False %}
-
+			<br>
 			<div class="date_not_valid">
 				<p>Date is not valid.</p>
 			</div>
@@ -180,16 +177,16 @@
 		        });
 		      });
     </script> 
-    {%if in_fav%} 
+    {%if in_fav and logged_in%} 
 		<script>
 		        document.getElementById("remove_from_favourites").style.visibility = 'visible';
             document.getElementById("add_to_favourites").style.visibility = 'hidden';
     </script> 
     {%endif%}
 
-    {%if in_fav != True%} 
+    {%if in_fav != True and logged_in%} 
 		<script>
-		        document.getElementById("add_to_favourites").style.visibility = 'visible';
+		    document.getElementById("add_to_favourites").style.visibility = 'visible';
             document.getElementById("remove_from_favourites").style.visibility = 'hidden';
     </script> 
     {%endif%}
