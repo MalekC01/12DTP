@@ -318,7 +318,7 @@ def remove_from_favoruites():
 def add_to_favourites():
 
     # query used to insert wanted stock into database in realtion to the user.
-    sql_query = '''INSERT INTO UserFav (uid, sid) VALUES (?, ?);'''
+    sql_query = '''INSERT INTO UserFav (uid, sid) VALUES (?), (?);'''
     do_query(sql_query, (session['uid'], session["stock_id"]))
     in_fav = check_in_favourites()
 
