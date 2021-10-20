@@ -307,7 +307,7 @@ def remove_from_favoruites():
     # query that is used if the user no longer
     # wants to have a stock in their favourites tab.
     remove_query = '''DELETE FROM UserFav WHERE uid = (?) AND sid = (?);'''
-    remove_stock = do_query(remove_query, (session['uid'], session['stock_id']))
+    remove_stock = (remove_query, (session['uid'], session['stock_id']))
 
     return redirect('/profile', logged_in=logged_in)
 
@@ -316,11 +316,22 @@ def remove_from_favoruites():
 
 @app.route('/add_to_favourites')
 def add_to_favourites():
-
+    cursor = create_connection.cursor()
     # query used to insert wanted stock into database in realtion to the user.
-    sql_query = '''INSERT INTO UserFav (uid, sid) VALUES (?), (?);'''
-    do_query(sql_query, (session['uid'], session["stock_id"]))
+    sql_query = '''INSERT INTO UserFav (uid, sid) VALUES (?, ?);'''
+    cursor.execute(sql_query, (session['uid'], session["stock_id"]))
+    create_connection().commit()
+
+    conn = create_connection("user_database.db")
+    cursor = conn.cursor()
+
+
+
+
     in_fav = check_in_favourites()
+
+
+    print("add running")
 
     return redirect('/', in_fav=in_fav)
 

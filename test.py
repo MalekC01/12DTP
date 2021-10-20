@@ -1,9 +1,6 @@
-import bcrypt
+stocks = ['hello']
 
-passwd = b's$cret12'
-
-salt = bcrypt.gensalt()
-hashed = bcrypt.hashpw(passwd, salt)
-
-print(salt)
-print(hashed)
+if len(stocks) == 0:
+    print(0)
+else:
+    print(1)
