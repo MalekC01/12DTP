@@ -3,7 +3,7 @@ import requests
 from flask import Flask, render_template, url_for, request, redirect, session
 from flask_session import Session
 from datetime import datetime
-import sqlite3 
+import sqlite3
 from sqlite3 import Error
 import stock
 import yfinance as yf
@@ -14,258 +14,322 @@ app = Flask(__name__)
 logged_in = None
 
 
-#Connects website to the database
+# Connects website to the database
 def create_connection(db_file):
-  try:
-    conn = sqlite3.connect(db_file)
-    print(sqlite3.version)
-  except Error as e:
-    print(e)
-  return conn
+    try:
+        conn = sqlite3.connect(db_file)
+        print(sqlite3.version)
+    except Error as e:
+        print(e)
+    return conn
 
 
-def do_query(query, data = None, fetchall = False):
-  conn = create_connection("user_database.db")
-  cursor = conn.cursor()
-  if data is None:
-    cursor.execute(query)
-  else:
-    cursor.execute(query, data)
-  conn.commit()
-  results = cursor.fetchall() if fetchall else cursor.fetchone()
-  conn.close()
-  return results
+# This function is what commits my querys into my database,
+# This function is called throughout my code.
+def do_query(query, data=None, fetchall=False):
+    conn = create_connection("user_database.db")
+    cursor = conn.cursor()
+    if data is None:
+        cursor.execute(query)
+    else:
+        cursor.execute(query, data)
+    conn.commit()
+    results = cursor.fetchall() if fetchall else cursor.fetchone()
+    conn.close()
+    return results
 
 
-
-#starts the session
+# starts the session
 @app.route('/set/')
 def set():
-  session['key'] = 'value'
-  return 'ok'
+    # created key for session
+    session['key'] = 'value'
+
 
 @app.route('/get/')
 def get():
-  return session.get('key', 'not set')
+    return session.get('key', 'not set')
 
-#checks user has logged in 
+
+# checks user has logged in
 def check_logged_in():
-  if 'email' in session:
-    return True
-  return False
+    # checks to see if user is logged in,
+    # determines soem functioanlity like what nav bar is shown.
+    if 'email' in session:
+        return True
+    return False
 
-#makes sure form submission is valid
+
+# makes sure form submission is valid
 def comparison_stock_exists():
-  if 'stock_1' in session:
-    return True
-  return False
+    if 'stock_1' in session:
+        return True
+    return False
 
-#once session has started log out will end the session
+
+# once session has started log out will end the session
 @app.route('/logout')
 def sign_out():
-  session.pop('email', None)
-  return render_template('logout.html', logged_in = logged_in)
+    # once logged out is clicked session will end.
+    # Means changes will be made to nav bar and what is avalible to the user
+    session.pop('email', None)
+    return render_template('logout.html', logged_in=logged_in)
+
 
 @app.errorhandler(404)
 def page_404(e):
-  logged_in = check_logged_in()
-  return render_template('page_404.html', logged_in = logged_in), 404
+    # if url is inavlid this will give the user an error message
+    # telling them it is unavlible.
+    logged_in = check_logged_in()
+    return render_template('page_404.html', logged_in=logged_in), 404
 
-#Home page
+
+# Home page
 @app.route('/')
 def home():
-  logged_in = check_logged_in()
-  return render_template('home.html', logged_in = logged_in)
+    logged_in = check_logged_in()
+    return render_template('home.html', logged_in=logged_in)
 
-#Register Page
+
+# Register Page
 @app.route("/register")
 def register():
-  logged_in = check_logged_in()
-  return render_template("register.html", logged_in = logged_in)
+    logged_in = check_logged_in()
+    return render_template("register.html", logged_in=logged_in)
 
-#Login page
+
+# Login page
 @app.route("/login")
 def login():
- return render_template("login.html", logged_in = logged_in)
+    return render_template("login.html", logged_in=logged_in)
 
 
-
-#Registers a user and sends information to the database
+# Registers a user and sends information to the database.
 @app.route('/register', methods=['POST'])
 def my_form():
-  register_user = None
-  
-  if request.method == "POST":
-    name = request.form.get("Name")
-    email = request.form.get("Email")
-    password = request.form.get("Password")
-    sql_query = '''INSERT INTO User (name, username_email, password) VALUES (?, ?, ?)'''
-    do_query(sql_query,(name, email, password))
-  return redirect('/')
+    register_user = None
+
+    if request.method == "POST":
+        name = request.form.get("Name")
+        email = request.form.get("Email")
+        password = request.form.get("Password")
+        # Query that is used to add data from user into the database.
+        # Then uses the do query function.
+        sql_query = '''INSERT INTO User
+                       (name, username_email, password)
+                       VALUES (?, ?, ?)'''
+        do_query(sql_query, (name, email, password))
+    return redirect('/')
 
 
-
-#Checks users input for login matches the information in the database
+# Checks users input for login matches the information in the database.
 @app.route("/login", methods=['POST'])
 def login_check():
-  if request.method == "POST":
-    password = request.form.get("password")
-    email = request.form.get("email")
-    
-    login_query = '''SELECT username_email, password FROM User WHERE username_email = (?) AND password = (?);'''
-    in_db = do_query(login_query, (email, password))
-    if not in_db:
-      logged_in = False
-      return render_template("/login.html", logged_in = logged_in)
-    else:
-      logged_in = True
-      session['email'] = email
+    if request.method == "POST":
+        # takes data from the from on the login page.
+        password = request.form.get("password")
+        email = request.form.get("email")
 
-      find_id = '''SELECT id FROM User WHERE username_email = (?);'''
-      uid = do_query(find_id, (session['email'],))
-      session['uid'] = uid[0]
-      return render_template("/login.html", logged_in = logged_in)
+        # query that is used to search for the users data in the database.
+        login_query = '''SELECT username_email,
+                         password FROM User
+                         WHERE username_email = (?)
+                         AND password = (?);'''
+        in_db = do_query(login_query, (email, password))
+        # runs login check and returns
+        # wheather or not this login is a match with data in database.
+        if not in_db:
+            logged_in = False
+            return render_template("/login.html", logged_in=logged_in)
+        else:
+            logged_in = True
+            # if login is true will then add the user to database
+            # where it will be stored until logged out.
+            session['email'] = email
+
+            # finds the id of the user in the
+            # database using the email gathered  from the form.
+            find_id = '''SELECT id FROM User WHERE username_email = (?);'''
+            uid = do_query(find_id, (session['email'], ))
+            session['uid'] = uid[0]
+            return render_template("/login.html", logged_in=logged_in)
 
 
 @app.route("/favourites")
 def favourites():
-  favourite_stocks = None
-  logged_in = check_logged_in()
-  sql_query = '''SELECT stock_name FROM Favourites WHERE uid = ?;'''
-  favourite_stocks = do_query(sql_query, (session['uid'],), True)
-  print("Favourites: ")
-  print(favourite_stocks)
-  return render_template("favourites.html", logged_in = logged_in, favourite_stocks = favourite_stocks)
+    favourite_stocks = None
+    logged_in = check_logged_in()
+    # runs query of what stocks the user has added to their favoruites,
+    # then returns data which is then displayed to the user on the website.
+    sql_query = '''SELECT stock_ticker FROM Favourites WHERE id IN (SELECT sid FROM UserFav WHERE uid = ?);'''
+    favourite_stocks = do_query(sql_query, (session['uid'], ), True)
+    print("Favourites: ")
+    print(favourite_stocks)
+    return render_template("favourites.html",
+                           logged_in=logged_in,
+                           favourite_stocks=favourite_stocks)
 
 
-#Stock page and api
-@app.route('/stocks', methods = ["GET", "POST"]) 
+# Stock page and api, this is where the data is gathered
+# and to be sent to the website where it is displayed to the user.
+@app.route('/stocks', methods=["GET", "POST"])
 def stock_data():
 
-  in_fav = False
-  logged_in = check_logged_in()
-  print(logged_in)
+    in_fav = False
+    logged_in = check_logged_in()
+    print(logged_in)
 
-  stock.clear_data()
+    stock.clear_data()
 
-  session.pop('stock_1', None)
+    # makes sure it session has most recently searched stock by the user.
+    session.pop('stock_1', None)
 
-  print(session)
+    stock_exists = comparison_stock_exists()
 
-  stock_exists = comparison_stock_exists()
+    # creates all the varibles needed top be used for the data in the website.
+    stock_valid = True
+    date_valid = None
+    find_data = None
+    stock_name = None
+    favourite = None
+    info_for_graph = None
+    description = None
 
-  stock_valid = True
-  date_valid = None
-  find_data = None
-  stock_name = None
-  favourite = None
-  info_for_graph = None
-  description = None
+    if request.method == "POST":
+        # info is gathered from users about what
+        # stock they would like to see and what date.
+        stock_name = request.form.get("Stock_name")
+        date = request.form.get("data_date")
+        stock_name = stock_name.upper()
 
-  if request.method == "POST":
-    stock_name = request.form.get("Stock_name")
-    date = request.form.get("data_date")
-    stock_name = stock_name.upper()
+        # checks the stock inputted by the user is a valid stock
+        # and is able to be found by the api.
+        stock_valid = stock.stock_is_valid(stock_name)
 
-    stock_valid = stock.stock_is_valid(stock_name)
+        # checks that the date entered by the user is valid.
+        # Reasons may not be valid is on a weekend or other day the
+        # market is closed or the stock was not created then.
+        date_valid, date_string = stock.is_date_valid(date)
 
-    date_valid, date_string = stock.is_date_valid(date)
-  
-    if  stock_valid and date_valid:
-      find_data = stock.get_data(stock_name, date_string)
+        # if both stock and date is valid runs function that will get the data.
+        if stock_valid and date_valid:
+            find_data = stock.get_data(stock_name, date_string)
 
-      session["stock_name"] = stock_name
-      session["stock_1"] = find_data
-      stock_exists = comparison_stock_exists()
-      
-      in_fav = check_in_favourites()
-      print("In fav: " + str(in_fav))
-      info_for_graph = data_for_graph(stock_name)
-      description = get_description(stock_name)
+            # checks all is correct and gets all information needed. Creates session for stock name.
+            session["stock_name"] = stock_name
 
-  return render_template("stocks.html", description = description, info_for_graph = info_for_graph, in_fav = in_fav, stock_valid = stock_valid, date_valid = date_valid, find_data = find_data, stock_name = stock_name, favourite = favourite, logged_in = logged_in, stock_exists = stock_exists)
+            find_stock_id = '''SELECT sid FROM UserFav WHERE uid = (?)'''
+            stock_id = do_query(find_stock_id, (session['uid'], ), True)
+
+            session["stock_id"] = stock_id
+
+
+            
+            session["stock_1"] = find_data
+            stock_exists = comparison_stock_exists()
+            in_fav = check_in_favourites()
+            info_for_graph = data_for_graph(stock_name)
+            description = get_description(stock_name)
+
+    return render_template("stocks.html",
+                           description=description,
+                           info_for_graph=info_for_graph,
+                           in_fav=in_fav,
+                           stock_valid=stock_valid,
+                           date_valid=date_valid,
+                           find_data=find_data,
+                           stock_name=stock_name,
+                           favourite=favourite,
+                           logged_in=logged_in,
+                           stock_exists=stock_exists)
 
 
 def check_in_favourites():
-  find_id = '''SELECT stock_name FROM Favourites WHERE uid = (?);'''
-  stocks = do_query(find_id, (session['uid'],), True)
-  print("stocks" + str(stocks))
-  print("session: " + session['stock_name'])
+    # querys database to find if stock entered
+    # by the user is already in favoruties.
+    # Determines what button is shown to the user.
+    find_id = '''SELECT stock_ticker FROM Favourites WHERE id IN (SELECT sid FROM UserFav WHERE uid = ?)'''
+    stocks = do_query(find_id, (session['uid'], ), True)
 
-  stock_list = []
+    stock_list = []
 
-  for item in stocks:
-    stock_list.append(item[0])
+    for item in stocks:
+        stock_list.append(item[0])
 
-  if stock_list is not None and session['stock_name'] in stock_list:
-    return True
-  else:
-    return False
+    if stock_list is not None and session['stock_name'] in stock_list:
+        return True
+    else:
+        return False
 
 
-
-#searches for the historic data to add to the graph
+# searches for the historic data to add to the graph.
 def data_for_graph(stock_name):
-    
-  ticker = yf.Ticker(stock_name)
-  hist = ticker.history(period="max")
 
-  data = hist['Close'].to_csv()
-  data_list = data.split()
+    # using the api with all previous
+    # information from user to get a final result.
+    ticker = yf.Ticker(stock_name)
+    hist = ticker.history(period="max")
 
-  date_list = []
-  value_list = []
+    # puts data for the graph into a readable and formatable file.
+    data = hist['Close'].to_csv()
+    data_list = data.split()
 
-  for item in data_list[1:]:
-      items = item.split(',')
-      date_list.append(items[0])
-      value_list.append(float(items[1]))
+    date_list = []
+    value_list = []
 
-  data_for_graph = [['Date', 'Price']]
+    # seperates all value so they can then be turned into a graph.
+    for item in data_list[1:]:
+        items = item.split(',')
+        date_list.append(items[0])
+        value_list.append(float(items[1]))
 
-  for i in range(len(date_list)):
-      data_for_graph.append([date_list[i], value_list[i]])
+    data_for_graph = [['Date', 'Price']]
 
-  return data_for_graph
+    for i in range(len(date_list)):
+        data_for_graph.append([date_list[i], value_list[i]])
+
+    return data_for_graph
+
 
 def get_description(stock_name):
+    # uses api to get description by using the users input.
+    ticker = yf.Ticker(stock_name)
+    description_blurb = []
+    blurb = ticker.info
+    # only takes out the specfic part of the return from api that is needed.
+    description = description_blurb.append(blurb['longBusinessSummary'])
 
-  ticker = yf.Ticker(stock_name)
-  description_blurb = []
-  blurb = ticker.info
-  description = description_blurb.append(blurb['longBusinessSummary'])
-
-  return description_blurb
-  
+    return description_blurb
 
 
 @app.route('/remove_from_favourites')
 def remove_from_favoruites():
+    # query that is used if the user no longer
+    # wants to have a stock in their favourites tab.
+    remove_query = '''DELETE FROM UserFav WHERE uid = (?) AND sid = (?);'''
+    remove_stock = do_query(remove_query, (session['uid'], session['stock_id']))
 
-  remove_query = '''DELETE FROM Favourites WHERE uid = (?) AND stock_name = (?);'''
-  remove_stock = do_query(remove_query, (session['uid'], session['stock_name']))
+    return redirect('/profile', logged_in=logged_in)
 
-  return redirect('/profile', logged_in = logged_in)
 
 
 
 @app.route('/add_to_favourites')
 def add_to_favourites():
 
-  sql_query = '''INSERT INTO Favourites (uid, stock_name) VALUES (?, ?);'''
-  do_query(sql_query, (session['uid'], session["stock_name"]))
-  in_fav = check_in_favourites()
-  print("in_fav: " + str(in_fav))
-  
-  return redirect('/', in_fav = in_fav)
+    # query used to insert wanted stock into database in realtion to the user.
+    sql_query = '''INSERT INTO UserFav (uid, sid) VALUES (?, ?);'''
+    do_query(sql_query, (session['uid'], session["stock_id"]))
+    in_fav = check_in_favourites()
+
+    return redirect('/', in_fav=in_fav)
 
 
+if __name__ == '__main__':
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
 
-if __name__ == '__main__': 
-  app.secret_key = 'super secret key'
-  app.config['SESSION_TYPE'] = 'filesystem'
+    sess = Session()
+    sess.init_app(app)
 
-  sess = Session()
-  sess.init_app(app)
-
-  app.run(port=8080, debug=True)
+    app.run(port=8080, debug=True)
