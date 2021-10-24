@@ -1,6 +1,10 @@
-stocks = ['hello']
+session['uid'] = None
 
-if len(stocks) == 0:
-    print(0)
+if session['uid'] == None:
+    print("yes")
 else:
-    print(1)
+    print("no")
+
+
+
+

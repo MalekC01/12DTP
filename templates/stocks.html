@@ -176,23 +176,28 @@
 		          return false;
 		        });
 		      });
-    </script> 
-    {%if in_fav and logged_in%} 
+	</script> 
+	{%if logged_in == True%}
+    {%if in_fav%} 
 		<script>
 		        document.getElementById("remove_from_favourites").style.visibility = 'visible';
             document.getElementById("add_to_favourites").style.visibility = 'hidden';
     </script> 
     {%endif%}
 
-    {%if in_fav != True and logged_in%} 
+    {%if in_fav != True%} 
 		<script>
 		    document.getElementById("add_to_favourites").style.visibility = 'visible';
             document.getElementById("remove_from_favourites").style.visibility = 'hidden';
     </script> 
-    {%endif%}
+	{%endif%}
+	{%else%}
+	<p>To add a stock to favourites you must be <a href="/login"><b>logged</b></a> in.</p>
+	{%endif%}
     <br>
 		<br>
 	</div>
-	{%endif%} {% endblock %}
+	{%endif%} 
+	{% endblock %}
 </body>
 </html>

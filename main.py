@@ -8,6 +8,7 @@ from sqlite3 import Error
 import stock
 import yfinance as yf
 import pandas as pd
+import hashlib
 
 app = Flask(__name__)
 
@@ -18,7 +19,6 @@ logged_in = None
 def create_connection(db_file):
     try:
         conn = sqlite3.connect(db_file)
-        print(sqlite3.version)
     except Error as e:
         print(e)
     return conn
@@ -88,6 +88,7 @@ def page_404(e):
 @app.route('/')
 def home():
     logged_in = check_logged_in()
+    print("logged in: " + str(logged_in))
     return render_template('home.html', logged_in=logged_in)
 
 
@@ -113,13 +114,18 @@ def my_form():
         name = request.form.get("Name")
         email = request.form.get("Email")
         password = request.form.get("Password")
+
+        pre_hashed = bytes(password, 'utf-8')
+        hashed_password = int.from_bytes(hashlib.sha256(pre_hashed).digest()[:8], 'little')
+
         # Query that is used to add data from user into the database.
         # Then uses the do query function.
         sql_query = '''INSERT INTO User
                        (name, username_email, password)
                        VALUES (?, ?, ?)'''
-        do_query(sql_query, (name, email, password))
-    return redirect('/')
+        do_query(sql_query, (name, email, hashed_password))
+
+    return redirect('/login')
 
 
 # Checks users input for login matches the information in the database.
@@ -130,12 +136,18 @@ def login_check():
         password = request.form.get("password")
         email = request.form.get("email")
 
+        pre_hashed = bytes(password, 'utf-8')
+        hashed_password = int.from_bytes(hashlib.sha256(pre_hashed).digest()[:8], 'little')
+
+
+
+
         # query that is used to search for the users data in the database.
         login_query = '''SELECT username_email,
                          password FROM User
                          WHERE username_email = (?)
                          AND password = (?);'''
-        in_db = do_query(login_query, (email, password))
+        in_db = do_query(login_query, (email, hashed_password))
         # runs login check and returns
         # wheather or not this login is a match with data in database.
         if not in_db:
@@ -163,8 +175,6 @@ def favourites():
     # then returns data which is then displayed to the user on the website.
     sql_query = '''SELECT stock_ticker FROM Favourites WHERE id IN (SELECT sid FROM UserFav WHERE uid = ?);'''
     favourite_stocks = do_query(sql_query, (session['uid'], ), True)
-    print("Favourites: ")
-    print(favourite_stocks)
     return render_template("favourites.html",
                            logged_in=logged_in,
                            favourite_stocks=favourite_stocks)
@@ -177,7 +187,6 @@ def stock_data():
 
     in_fav = False
     logged_in = check_logged_in()
-    print(logged_in)
 
     stock.clear_data()
 
@@ -218,13 +227,16 @@ def stock_data():
             # checks all is correct and gets all information needed. Creates session for stock name.
             session["stock_name"] = stock_name
 
-            find_stock_id = '''SELECT sid FROM UserFav WHERE uid = (?)'''
-            stock_id = do_query(find_stock_id, (session['uid'], ), True)
+            find_stock_id = '''SELECT id FROM Favourites WHERE stock_ticker = (?)'''
+            stock_id = do_query(find_stock_id, (session['stock_name'], ), True)
+            if stock_id == []:
+                sql_query = '''INSERT INTO Favourites (stock_ticker) VALUES (?);'''
+                stock_id = do_query(sql_query, (session['stock_name'], ))
 
-            session["stock_id"] = stock_id
+            stock_id = do_query(find_stock_id, (session['stock_name'], ), True)
 
+            session["stock_id"] = stock_id[0][0]
 
-            
             session["stock_1"] = find_data
             stock_exists = comparison_stock_exists()
             in_fav = check_in_favourites()
@@ -307,33 +319,23 @@ def remove_from_favoruites():
     # query that is used if the user no longer
     # wants to have a stock in their favourites tab.
     remove_query = '''DELETE FROM UserFav WHERE uid = (?) AND sid = (?);'''
-    remove_stock = (remove_query, (session['uid'], session['stock_id']))
+    do_query(remove_query, (session['uid'], session['stock_id']))
 
-    return redirect('/profile', logged_in=logged_in)
+    return redirect('/profile')
 
 
 
 
 @app.route('/add_to_favourites')
 def add_to_favourites():
-    cursor = create_connection.cursor()
+ 
     # query used to insert wanted stock into database in realtion to the user.
     sql_query = '''INSERT INTO UserFav (uid, sid) VALUES (?, ?);'''
-    cursor.execute(sql_query, (session['uid'], session["stock_id"]))
-    create_connection().commit()
-
-    conn = create_connection("user_database.db")
-    cursor = conn.cursor()
-
-
-
-
+    do_query(sql_query, (session['uid'], session["stock_id"]))
     in_fav = check_in_favourites()
+    
 
-
-    print("add running")
-
-    return redirect('/', in_fav=in_fav)
+    return redirect('/')
 
 
 if __name__ == '__main__':

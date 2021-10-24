@@ -79,7 +79,6 @@ def clear_data():
 def get_data(stock_name, date_string):
 
     ticker = yf.Ticker(stock_name)
-    print("data")
     data = ticker.history(start=date_string)
 
     # all data is formatted and ready to be visable on the website
@@ -90,7 +89,5 @@ def get_data(stock_name, date_string):
         "close": round(data['Close'][1], 2)
     }
 
-    print("Data dict: ")
-    print(raw_data)
 
     return raw_data
