@@ -203,6 +203,7 @@ def stock_data():
     favourite = None
     info_for_graph = None
     description = None
+    date = None
 
     if request.method == "POST":
         # info is gathered from users about what
@@ -253,7 +254,8 @@ def stock_data():
                            stock_name=stock_name,
                            favourite=favourite,
                            logged_in=logged_in,
-                           stock_exists=stock_exists)
+                           stock_exists=stock_exists,
+                           date = date)
 
 
 def check_in_favourites():
@@ -261,7 +263,10 @@ def check_in_favourites():
     # by the user is already in favoruties.
     # Determines what button is shown to the user.
     find_id = '''SELECT stock_ticker FROM Favourites WHERE id IN (SELECT sid FROM UserFav WHERE uid = ?)'''
-    stocks = do_query(find_id, (session['uid'], ), True)
+    if logged_in:
+        stocks = do_query(find_id, (session['uid'], ), True)
+    else:
+        return False
 
     stock_list = []
 

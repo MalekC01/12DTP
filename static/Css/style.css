@@ -313,3 +313,17 @@ p{
   margin: auto;
   width: fit-content;
 }
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  text-align: center;
+  padding-left: 100;
+}
+.grid-item {
+  border: 1px transparent;
+  padding: 5px;
+  font-size: 20px;
+  text-align: center;
+}

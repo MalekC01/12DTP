@@ -10,10 +10,7 @@
 	{% extends 'layout.html' %} {% block content %}
 
 	<div class="user_input">
-		<h2>See Historical Data About A Stock. <img src="/static/images/info.png"
-		title=
-		"A ticker is the obrevation of a stock name e.g. Apple's stock ticker is AAPL">
-		</h2>
+		<h2>See Historical Data About A Stock.</h2>
 
 
 		<form id="find_data" method="post" name="find_data">
@@ -23,7 +20,9 @@
 				<p>Stock doesn't exist or ticker is incorrect. Please try again</p>
 			</div>
 			<br>
-			{%endif%} <label>Search a stock (Use the stocks Ticker):</label><br>
+			{%endif%} <label>Search a stock using the ticker: <img src="/static/images/info.png"
+				title=
+				"Stock must be on the US stock exchange. A ticker is the obrevation of a stock name e.g. Apple's stock ticker is AAPL."></label><br>
 			<input name="Stock_name" placeholder="Ticker" type="name"><br>
 			{% if date_valid == False %}
 			<br>
@@ -45,21 +44,30 @@
 	<div class="display_data">
 		<h2><b>Company:</b> {{stock_name}}</h2>
 
-
-		<table>
-			<tr>
-				<td><b>High:</b> ${{find_data.get("high")}}</td>
-
-				<td><b>Open:</b> ${{find_data.get("open")}}</td>
-			</tr>
+		<p><b>{{date}}</b></p>
 
 
-			<tr>
-				<td><b>Low:</b> ${{find_data.get("low")}}</td>
 
-				<td><b>Close:</b> ${{find_data.get("close")}}</td>
-			</tr>
-		</table>
+
+		<div class="grid-container">
+			<div class="grid-item">
+				<b>High:</b> ${{find_data.get("high")}}</div>
+			<div class="grid-item">
+				<b>Open:</b> ${{find_data.get("open")}}</div>
+				<br>
+			<div class="grid-item">
+				<b>Low:</b> ${{find_data.get("low")}}</div>
+			<div class="grid-item">
+				<b>Close:</b> ${{find_data.get("close")}}</div>
+		</div>
+		
+
+		
+
+
+			
+
+
 		<br>
 		<br>
 		<script src="https://www.gstatic.com/charts/loader.js" type=
@@ -177,21 +185,26 @@
 		        });
 		      });
 	</script> 
-	{%if logged_in == True%}
+	
     {%if in_fav%} 
 		<script>
 		        document.getElementById("remove_from_favourites").style.visibility = 'visible';
             document.getElementById("add_to_favourites").style.visibility = 'hidden';
-    </script> 
+    	</script> 
     {%endif%}
 
     {%if in_fav != True%} 
 		<script>
 		    document.getElementById("add_to_favourites").style.visibility = 'visible';
             document.getElementById("remove_from_favourites").style.visibility = 'hidden';
-    </script> 
+		</script> 
 	{%endif%}
-	{%else%}
+	
+	{%if logged_in == False%}
+		<script>
+			document.getElementById("add_to_favourites").style.visibility = 'hidden';
+			document.getElementById("remove_from_favourites").style.visibility = 'hidden';
+		</script>
 	<p>To add a stock to favourites you must be <a href="/login"><b>logged</b></a> in.</p>
 	{%endif%}
     <br>
