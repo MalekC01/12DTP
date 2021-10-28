@@ -7,13 +7,12 @@
     <h2>Favourite Stocks:</h2>
 {%if logged_in%}
     <div class="favourites"></div>
-
-    <table>
+    <ol>
         {% for favourite_stock in favourite_stocks %}
-            <tr><td><a href="/stocks">{{favourite_stock[0]}}</a>  </td></tr>
+            <li><a href="/stocks">{{favourite_stock[0]}}</a></li>
+            <br>
         {%endfor%}
-    </table>
-
+    </ol>
     {% if favourite_stocks|length == 0 %}
     <p>Favourites empty. To add a stock to your favoruites page visit the <a href="/stocks"><b>Stock</b></a> page and click add to favourites.</p>
     {%endif%}
