@@ -25,7 +25,8 @@ def is_date_valid(date):
     for i in range(len(date)):
         if i == 2 or i == 5:
             if date[i] != "/":
-                return False, 'Make sure to add a / after the days and month. (DD/MM/YYYY)'
+                return False, '''Make sure to add a / after the days and month.
+                              (DD/MM/YYYY)'''
         else:
             if not date[i].isdigit():
                 return False, 'Date must be entered in intergers'
@@ -88,6 +89,5 @@ def get_data(stock_name, date_string):
         "open": round(data['Open'][1], 2),
         "close": round(data['Close'][1], 2)
     }
-
 
     return raw_data

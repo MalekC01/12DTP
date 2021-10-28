@@ -118,6 +118,13 @@ img:hover {
   padding: 5px;
 }
 
+.password_not_valid{
+  background-color: #ef4943;
+  border: 2px solid red;
+  border-radius: 5px;
+  padding: 5px;
+}
+
 
 .Login_correct {
   background-color: #17d42d;

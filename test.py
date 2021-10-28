@@ -1,9 +1,9 @@
-session['uid'] = None
+import re
 
-if session['uid'] == None:
-    print("yes")
-else:
-    print("no")
+length_check = 9
+if length_check == range(1, 12):
+    print("pass")
+
 
 
 
