@@ -147,22 +147,21 @@ def register_user():
                                 VALUES (?, ?, ?)'''
                     do_query(sql_query, (name, email, hashed_password))   
                     print("password check: " + str(password_pass))
-                    return redirect(url_for('login', password_pass=password_pass))
+                    return redirect(url_for('login', password_pass=password_pass, logged_in=logged_in))
 
                 else: 
                     password_pass = False
                     print("password check: " + str(password_pass))
-                    return render_template('register.html', password_pass=password_pass)
+                    return render_template('register.html', password_pass=password_pass, logged_in=logged_in)
 
             else:
                 password_pass = False
                 print("password check: " + str(password_pass))
-                #return redirect(url_for('register', password_pass=password_pass))
-                return render_template('register.html', password_pass=password_pass)
+                return render_template('register.html', password_pass=password_pass, logged_in=logged_in)
         else:
             already_exists = True
             print("account exists")
-            return render_template('register.html', already_exists=already_exists)    
+            return render_template('register.html', already_exists=already_exists, logged_in=logged_in)    
             
 
 

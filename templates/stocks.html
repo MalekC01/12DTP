@@ -8,6 +8,7 @@
 
 <body>
 	{% extends 'layout.html' %} {% block content %}
+	
 
 	<div class="user_input">
 		<h2>See Historical Data About A Stock.</h2>
@@ -22,7 +23,7 @@
 			<br>
 			{%endif%} <label>Search a stock using the ticker: <img src="/static/images/info.png"
 				title=
-				"Stock must be on the US stock exchange. A ticker is the obrevation of a stock name e.g. Apple's stock ticker is AAPL."></label><br>
+				"Stock must be on the US stock exchange. A ticker is the abbreviation of a stock name e.g. Apple's stock ticker is AAPL."></label><br>
 			<input name="Stock_name" placeholder="Ticker" type="name"><br>
 			{% if date_valid == False %}
 			<br>
@@ -209,8 +210,9 @@
 	{%endif%}
     <br>
 		<br>
-	</div>
 	{%endif%} 
 	{% endblock %}
+	</div>
+	
 </body>
 </html>

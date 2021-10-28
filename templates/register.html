@@ -1,21 +1,16 @@
-<!DOCTYPE html>
 
-<html>
-<head>
-	<title>
-	</title>
-</head>
-
-<body>
-    {% extends 'layout.html' %}{% block content %}
-
-
+    
+{% extends 'layout.html' %}
+{% block content %}
+    
 <div class="register_form">
-<form method="POST">
+    <div class="register">
+    <form method="POST">
+    
     {% if password_pass == False %}
 	<br>
 	<div class="password_not_valid">
-				<p>Password Error: <br> 1. Cannot include special characters <br> 2. Be longer than 12 characters.</p>
+		<p>Password Error: <br> 1. Cannot include special characters <br> 2. Be longer than 12 characters.</p>
 	</div>
 	{%endif%}
 
@@ -25,7 +20,7 @@
         <p>You have already created an account. <br> <a href="/login"><b>Login  here.</b></a></p>
     </div>
     {%endif%}
-            <br>
+    <br>
     <b>
         <label>Name</label><br>
         <input type="name" name="Name"><br><br>
@@ -35,14 +30,14 @@
 
         <label>Password</label><br>
         <input type="password" name="Password"><br><br>
-    </b>
+        </b>
 
         <input type="submit" value="CREATE USER">
-</form>
+    </form>
+    </div>
 
 
 </div>
 
+
 {% endblock %}
-</body>
-</html>
