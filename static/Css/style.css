@@ -3,17 +3,6 @@ body {
   margin: 0px;
 }
 
-/* Css for favoruites page */
-.favourites{
-  text-align: left;
-}
-
-/* Css for the graph on the stock page page */
-.chart_div{
-  border: 2px solid grey;
-}
-
-/* Css for stock page */
 main{
   padding: 3%;
   margin: auto;
@@ -21,20 +10,22 @@ main{
   margin-bottom: 2%;
 }
 
+/* general layout */
 
-
-/* form inout boxes siziing and formatting*/
-.user_input{
-  margin: 20%;
-  background-color: #f2f2f2;
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 3%;
-  margin: auto;
-  width: 40%;
+a{
+  text-decoration: none;
+  color: inherit;
 }
 
+a:hover{
+  text-decoration: underline 3px #0066ff;
+}
 
+p{
+  font-size: 18px;
+}
+
+/* css for stock page */
 .display_data{
   margin: 20%;
   background-color: #f2f2f2;
@@ -80,7 +71,7 @@ img:hover {
 }
 
 .compare button{
-  background-color: #0066ff;
+  background-color: # 0066ff;
   border: none;
   color: white;
   text-align: center;
@@ -93,9 +84,29 @@ img:hover {
   background-color: #0047b3;
 }
 
+/* Css for the graph on the stock page page */
+.chart_div{
+  border: 2px solid grey;
+}
 
 
-/* Error messages */
+/* Css for logout page */
+.logout_page{
+  margin: 20%;
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 3%;
+  margin: auto;
+  width: fit-content;
+}
+
+/* Css for favoruites page */
+.favourites{
+  text-align: left;
+}
+
+/* error/sucess message for when stock date inputted in the stock page is not a valid date */
 .stock_not_valid {
   background-color: #ef4943;
   border: 2px solid red;
@@ -110,7 +121,6 @@ img:hover {
   padding: 5px;
 }
 
-/* error message for when stock date inputted in the stock page is not a valid date */
 .date_not_valid {
   background-color: #ef4943;
   border: 2px solid red;
@@ -133,8 +143,16 @@ img:hover {
   padding: 5px;
 }
 
-
-/* Input formatting */
+/* Form input boxes sizing and formatting */
+.user_input{
+  margin: 20%;
+  background-color: #f2f2f2;
+  border: 2px solid grey;
+  border-radius: 5px;
+  padding: 3%;
+  margin: auto;
+  width: 40%;
+}
 
 input {
   border: 1px solid grey;
@@ -169,7 +187,6 @@ input[value="Logout"] {
   border-radius: 0px;
 }
 
-
 /* All CSS for navigation bar*/
 
 .topnav {
@@ -187,7 +204,7 @@ input[value="Logout"] {
 }
 
 .topnav a:hover {
-  background-color: #0047b3;
+  background-color: # 0047b3;
   text-decoration: none;
 }
 
@@ -199,8 +216,7 @@ input[value="Logout"] {
   margin: 100px;
 }
 
-
-/* Fonts and sizing */
+/* pages fonts and sizing */
 
 .Header{
   margin: 20px;
@@ -289,39 +305,13 @@ input[value="Logout"] {
   width: fit-content;
 }
 
-
-
 .user_input img{
   width: 4%;
   height: auto;
 
 }
 
-
-a{
-  text-decoration: none;
-  color: inherit;
-}
-
-a:hover{
-  text-decoration: underline 3px #0066ff;
-}
-
-p{
-  font-size: 18px;
-}
-
-.logout_page{
-  margin: 20%;
-  background-color: #f2f2f2;
-  border: 2px solid grey;
-  border-radius: 5px;
-  padding: 3%;
-  margin: auto;
-  width: fit-content;
-}
-
-
+/* grid css for stock page */
 .grid-container {
   display: grid;
   grid-template-columns: auto auto auto;

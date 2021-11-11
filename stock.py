@@ -3,7 +3,7 @@ import datetime
 import yfinance as yf
 
 
-# Tests stock to make sure it is a valid stock in the api
+#  Tests stock to make sure it is a valid stock in the api
 def stock_is_valid(stock):
     ticker = yf.Ticker(stock)
     try:
@@ -13,12 +13,12 @@ def stock_is_valid(stock):
         return False
 
 
-# Makes sure that that the market was open on that day
+#  Makes sure that that the market was open on that day
 def is_date_valid(date):
 
     info_of_date = ""
 
-    # checks formatting of the users input.
+    #  checks formatting of the users input.
     if len(date) != 10:
         return False, 'Length of date is wrong (DD/MM/YYYY)'
 
@@ -31,14 +31,14 @@ def is_date_valid(date):
             if not date[i].isdigit():
                 return False, 'Date must be entered in intergers'
 
-    # formats users input into a form that can be understood by the API.
+    #  formats users input into a form that can be understood by the API.
     date_list = date.split('/')
 
     year = date_list[2]
     month = date_list[1]
     day = date_list[0]
 
-    # check
+    #  check
     if int(year) not in range(2016, 2022):
         return False, 'Year must be in the last 5 years (2016-2021).'
 
@@ -59,7 +59,7 @@ def is_date_valid(date):
     return True, info_of_date
 
 
-# creates all variabled needed
+#  creates all variabled needed
 data_date = []
 date_high = []
 date_low = []
@@ -76,13 +76,13 @@ def clear_data():
     date_close = []
 
 
-# takes the input from the stock name a date and gets the data from the api
+#  takes the input from the stock name a date and gets the data from the api
 def get_data(stock_name, date_string):
 
     ticker = yf.Ticker(stock_name)
     data = ticker.history(start=date_string)
 
-    # all data is formatted and ready to be visable on the website
+    #  all data is formatted and ready to be visable on the website
     raw_data = {
         "high": round(data['High'][1], 2),
         "low": round(data['Low'][1], 2),

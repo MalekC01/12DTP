@@ -11,14 +11,14 @@ import pandas as pd
 import hashlib
 import re
 
-#github: https://github.com/MalekC01/12DTP
+# github: https://github.com/MalekC01/12DTP
 
 app = Flask(__name__)
 
 logged_in = None
 
 
-#Connects website to the database
+# Connects website to the database
 def create_connection(db_file):
     try:
         conn = sqlite3.connect(db_file)
@@ -27,8 +27,8 @@ def create_connection(db_file):
     return conn
 
 
-#This function is what commits my querys into my database,
-#This function is called throughout my code.
+# This function is what commits my querys into my database,
+# This function is called throughout my code.
 def do_query(query, data=None, fetchall=False):
     conn = create_connection("user_database.db")
     cursor = conn.cursor()
@@ -42,10 +42,10 @@ def do_query(query, data=None, fetchall=False):
     return results
 
 
-#starts the session
+# starts the session
 @app.route('/set/')
 def set():
-    #created key for session
+    # created key for session
     session['key'] = 'value'
 
 
@@ -54,40 +54,40 @@ def get():
     return session.get('key', 'not set')
 
 
-#checks user has logged in
+# checks user has logged in
 def check_logged_in():
-    #checks to see if user is logged in,
-    #determines soem functioanlity like what nav bar is shown.
+    # checks to see if user is logged in,
+    # determines soem functioanlity like what nav bar is shown.
     if 'email' in session:
         return True
     return False
 
 
-#makes sure form submission is valid
+# makes sure form submission is valid
 def comparison_stock_exists():
     if 'stock_1' in session:
         return True
     return False
 
 
-#once session has started log out will end the session
+# once session has started log out will end the session
 @app.route('/logout')
 def sign_out():
-    #once logged out is clicked session will end.
-    #Means changes will be made to nav bar and what is avalible to the user
+    # once logged out is clicked session will end.
+    # Means changes will be made to nav bar and what is avalible to the user
     session.pop('email', None)
     return render_template('logout.html', logged_in=logged_in)
 
 
 @app.errorhandler(404)
 def page_404(e):
-    #if url is inavlid this will give the user an error message
-    #telling them it is unavlible.
+    # if url is inavlid this will give the user an error message
+    # telling them it is unavlible.
     logged_in = check_logged_in()
     return render_template('page_404.html', logged_in=logged_in), 404
 
 
-#Home page
+# Home page
 @app.route('/')
 def home():
     logged_in = check_logged_in()
@@ -95,19 +95,20 @@ def home():
     return render_template('home.html', logged_in=logged_in)
 
 
-#Register Page
+# Register Page
 @app.route("/register")
 def register():
     logged_in = check_logged_in()
     return render_template("register.html", logged_in=logged_in)
 
 
-#Login page
+# Login page
 @app.route("/login")
 def login():
     return render_template("login.html", logged_in=logged_in)
 
-#Registers a user and sends information to the database.
+
+# Registers a user and sends information to the database.
 @app.route('/register', methods=['POST'])
 def register_user():
     password_pass = None
@@ -121,10 +122,11 @@ def register_user():
 
         search_for_user = '''SELECT name FROM User
                  WHERE username_email = (?)'''
-        check_not_already_registered = do_query(search_for_user, (email, ), True)
+        check_not_already_registered = do_query(search_for_user, (email, ),
+                                                True)
         if check_not_already_registered == []:
-            #This check means that users are unable to break the website
-            #Due to passwords being to long
+            # This check means that users are unable to break the website
+            # Due to passwords being to long
             length_check = len(password)
 
             print(type(length_check))
@@ -132,48 +134,55 @@ def register_user():
 
             if length_check < 12 and length_check > 0:
 
-                #list of special characters to compare against
-                string_check= re.compile('[@_!#$%^&*()<>?/\|}{~:]') 
-                if(string_check.search(password) == None): 
+                # list of special characters to compare against
+                string_check = re.compile('[@_!# $%^&*()<>?/\|}{~:]')
+                if (string_check.search(password) if None):
 
-                    password_pass = True  
+                    password_pass = True
 
                     pre_hashed = bytes(password, 'utf-8')
                     hashed_password = int.from_bytes(
-                    hashlib.sha256(pre_hashed).digest()[:8], 'little')
+                        hashlib.sha256(pre_hashed).digest()[:8], 'little')
 
-                    #Query that is used to add data from user into the database.
-                    #Then uses the do query function.
+                    # Query that is used to add data
+                    # From user into the database.
+                    # Then uses the do query function.
                     sql_query = '''INSERT INTO User
                                 (name, username_email, password)
                                 VALUES (?, ?, ?)'''
-                    do_query(sql_query, (name, email, hashed_password))   
+                    do_query(sql_query, (name, email, hashed_password))
                     print("password check: " + str(password_pass))
-                    return redirect(url_for('login', password_pass=password_pass, logged_in=logged_in))
+                    return redirect(
+                        url_for('login',
+                                password_pass=password_pass,
+                                logged_in=logged_in))
 
-                else: 
+                else:
                     password_pass = False
                     print("password check: " + str(password_pass))
-                    return render_template('register.html', password_pass=password_pass, logged_in=logged_in)
+                    return render_template('register.html',
+                                           password_pass=password_pass,
+                                           logged_in=logged_in)
 
             else:
                 password_pass = False
                 print("password check: " + str(password_pass))
-                return render_template('register.html', password_pass=password_pass, logged_in=logged_in)
+                return render_template('register.html',
+                                       password_pass=password_pass,
+                                       logged_in=logged_in)
         else:
             already_exists = True
             print("account exists")
-            return render_template('register.html', already_exists=already_exists, logged_in=logged_in)    
-            
+            return render_template('register.html',
+                                   already_exists=already_exists,
+                                   logged_in=logged_in)
 
 
-
-
-#Checks users input for login matches the information in the database.
+# Checks users input for login matches the information in the database.
 @app.route("/login", methods=['POST'])
 def login_check():
     if request.method == "POST":
-        #takes data from the from on the login page.
+        # takes data from the from on the login page.
         password = request.form.get("password")
         email = request.form.get("email")
 
@@ -181,25 +190,25 @@ def login_check():
         hashed_password = int.from_bytes(
             hashlib.sha256(pre_hashed).digest()[:8], 'little')
 
-        #query that is used to search for the users data in the database.
+        # query that is used to search for the users data in the database.
         login_query = '''SELECT username_email,
                             password FROM User
                             WHERE username_email = (?)
                             AND password = (?);'''
         in_db = do_query(login_query, (email, hashed_password))
-        #runs login check and returns
-        #wheather or not this login is a match with data in database.
+        # runs login check and returns
+        # wheather or not this login is a match with data in database.
         if not in_db:
             logged_in = False
             return render_template("/login.html", logged_in=logged_in)
         else:
             logged_in = True
-            #if login is true will then add the user to database
-            #where it will be stored until logged out.
+            # if login is true will then add the user to database
+            # where it will be stored until logged out.
             session['email'] = email
 
-            #finds the id of the user in the
-            #database using the email gathered  from the form.
+            # finds the id of the user in the
+            # database using the email gathered  from the form.
             find_id = '''SELECT id FROM User WHERE username_email = (?);'''
             uid = do_query(find_id, (session['email'], ))
             session['uid'] = uid[0]
@@ -210,8 +219,8 @@ def login_check():
 def favourites():
     favourite_stocks = None
     logged_in = check_logged_in()
-    #runs query of what stocks the user has added to their favoruites,
-    #then returns data which is then displayed to the user on the website.
+    # runs query of what stocks the user has added to their favoruites,
+    # then returns data which is then displayed to the user on the website.
     sql_query = '''SELECT stock_ticker FROM Favourites
                    WHERE id IN (SELECT sid FROM UserFav WHERE uid = ?);'''
     favourite_stocks = do_query(sql_query, (session['uid'], ), True)
@@ -220,8 +229,8 @@ def favourites():
                            favourite_stocks=favourite_stocks)
 
 
-#Stock page and api, this is where the data is gathered
-#and to be sent to the website where it is displayed to the user.
+# Stock page and api, this is where the data is gathered
+# and to be sent to the website where it is displayed to the user.
 @app.route('/stocks', methods=["GET", "POST"])
 def stock_data():
 
@@ -230,12 +239,12 @@ def stock_data():
 
     stock.clear_data()
 
-    #makes sure it session has most recently searched stock by the user.
+    # makes sure it session has most recently searched stock by the user.
     session.pop('stock_1', None)
 
     stock_exists = comparison_stock_exists()
 
-    #creates all the varibles needed top be used for the data in the website.
+    # creates all the varibles needed top be used for the data in the website.
     stock_valid = True
     date_valid = None
     find_data = None
@@ -246,27 +255,27 @@ def stock_data():
     date = None
 
     if request.method == "POST":
-        #info is gathered from users about what
-        #stock they would like to see and what date.
+        # info is gathered from users about what
+        # stock they would like to see and what date.
         stock_name = request.form.get("Stock_name")
         date = request.form.get("data_date")
         stock_name = stock_name.upper()
 
-        #checks the stock inputted by the user is a valid stock
-        #and is able to be found by the api.
+        # checks the stock inputted by the user is a valid stock
+        # and is able to be found by the api.
         stock_valid = stock.stock_is_valid(stock_name)
 
-        #checks that the date entered by the user is valid.
-        #Reasons may not be valid is on a weekend or other day the
-        #market is closed or the stock was not created then.
+        # checks that the date entered by the user is valid.
+        # Reasons may not be valid is on a weekend or other day the
+        # market is closed or the stock was not created then.
         date_valid, date_string = stock.is_date_valid(date)
 
-        #if both stock and date is valid runs function that will get the data.
+        # if both stock and date is valid runs function that will get the data.
         if stock_valid and date_valid:
             find_data = stock.get_data(stock_name, date_string)
 
-            #checks all is correct and gets all information needed.
-            #Creates session for stock name.
+            # checks all is correct and gets all information needed.
+            # Creates session for stock name.
             session["stock_name"] = stock_name
 
             find_stock_id = '''SELECT id FROM Favourites
@@ -302,9 +311,9 @@ def stock_data():
 
 
 def check_in_favourites():
-    #querys database to find if stock entered
-    #by the user is already in favoruties.
-    #Determines what button is shown to the user.
+    # querys database to find if stock entered
+    # by the user is already in favoruties.
+    # Determines what button is shown to the user.
     find_id = '''SELECT stock_ticker FROM Favourites
                  WHERE id IN
                  (SELECT sid FROM UserFav WHERE uid = ?)'''
@@ -324,22 +333,22 @@ def check_in_favourites():
         return False
 
 
-#searches for the historic data to add to the graph.
+# searches for the historic data to add to the graph.
 def data_for_graph(stock_name):
 
-    #using the api with all previous
-    #information from user to get a final result.
+    # using the api with all previous
+    # information from user to get a final result.
     ticker = yf.Ticker(stock_name)
     hist = ticker.history(period="max")
 
-    #puts data for the graph into a readable and formatable file.
+    # puts data for the graph into a readable and formatable file.
     data = hist['Close'].to_csv()
     data_list = data.split()
 
     date_list = []
     value_list = []
 
-    #seperates all value so they can then be turned into a graph.
+    # seperates all value so they can then be turned into a graph.
     for item in data_list[1:]:
         items = item.split(',')
         date_list.append(items[0])
@@ -354,11 +363,11 @@ def data_for_graph(stock_name):
 
 
 def get_description(stock_name):
-    #uses api to get description by using the users input.
+    # uses api to get description by using the users input.
     ticker = yf.Ticker(stock_name)
     description_blurb = []
     blurb = ticker.info
-    #only takes out the specfic part of the return from api that is needed.
+    # only takes out the specfic part of the return from api that is needed.
     description = description_blurb.append(blurb['longBusinessSummary'])
 
     return description_blurb
@@ -366,8 +375,8 @@ def get_description(stock_name):
 
 @app.route('/remove_from_favourites')
 def remove_from_favoruites():
-    #query that is used if the user no longer
-    #wants to have a stock in their favourites tab.
+    # query that is used if the user no longer
+    # wants to have a stock in their favourites tab.
     remove_query = '''DELETE FROM UserFav WHERE uid = (?) AND sid = (?);'''
     do_query(remove_query, (session['uid'], session['stock_id']))
 
@@ -377,7 +386,7 @@ def remove_from_favoruites():
 @app.route('/add_to_favourites')
 def add_to_favourites():
 
-    #query used to insert wanted stock into database in realtion to the user.
+    # query used to insert wanted stock into database in realtion to the user.
     sql_query = '''INSERT INTO UserFav (uid, sid) VALUES (?, ?);'''
     do_query(sql_query, (session['uid'], session["stock_id"]))
     in_fav = check_in_favourites()

@@ -42,9 +42,6 @@
 
 		<p><b>{{date}}</b></p>
 
-
-
-
 		<div class="grid-container">
 			<div class="grid-item">
 				<b>High:</b> ${{find_data.get("high")}}</div>
@@ -57,13 +54,6 @@
 				<b>Close:</b> ${{find_data.get("close")}}</div>
 		</div>
 		
-
-		
-
-
-			
-
-
 		<br>
 		<br>
 		<script src="https://www.gstatic.com/charts/loader.js" type=
@@ -116,7 +106,7 @@
 		                italic: false
 		              }
 		            },
-		      colors: ['green', '#097138']
+		      colors: ['green', '# 097138']
 		    };
 		  
 		          var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
@@ -150,7 +140,7 @@
 		</script> 
 		<script type="text/javascript">
 		          $(function() {
-		          $('#add_to_favourites').on('click', function(e) {
+		          $('# add_to_favourites').on('click', function(e) {
 		          e.preventDefault()
 		          $.getJSON('/add_to_favourites',
 		              function(data) {
@@ -171,7 +161,7 @@
 		</script> 
 		<script type="text/javascript">
 		          $(function() {
-		          $('#remove_from_favourites').on('click', function(e) {
+		          $('# remove_from_favourites').on('click', function(e) {
 		          e.preventDefault()
 		          $.getJSON('/remove_from_favourites',
 		              function(data) {
@@ -209,5 +199,4 @@
 	{% endblock %}
 	</div>
 	
-
 </html>
